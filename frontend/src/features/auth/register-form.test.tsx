@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { renderWithProviders } from '@/test/render'
+import { renderWithRouter } from '@/test/render'
 import { RegisterForm } from './register-form'
 
 function mockFetch(response: Response) {
@@ -9,8 +9,8 @@ function mockFetch(response: Response) {
   return fetchMock
 }
 
-async function fillForm(user: ReturnType<typeof renderWithProviders>['user']) {
-  await user.type(screen.getByLabelText('Nombre'), '  Ana  ')
+async function fillForm(user: Awaited<ReturnType<typeof renderWithRouter>>['user']) {
+  await user.type(await screen.findByLabelText('Nombre'), '  Ana  ')
   await user.type(screen.getByLabelText('Email'), 'ana@example.com')
   await user.type(screen.getByLabelText('Contraseña'), 'secreta123')
   await user.click(screen.getByRole('button', { name: 'Crear cuenta' }))
@@ -29,9 +29,9 @@ afterEach(() => {
 describe('RegisterForm', () => {
   it('valida en vivo y no envía si hay errores', async () => {
     const fetchMock = mockFetch(Response.json({}))
-    const { user } = renderWithProviders(<RegisterForm />)
+    const { user } = await renderWithRouter(<RegisterForm />, { initialPath: '/register' })
 
-    await user.type(screen.getByLabelText('Email'), 'no-es-email')
+    await user.type(await screen.findByLabelText('Email'), 'no-es-email')
     await user.type(screen.getByLabelText('Contraseña'), 'corta')
     await user.tab()
 
@@ -58,12 +58,13 @@ describe('RegisterForm', () => {
         { status: 201 },
       ),
     )
-    const { user } = renderWithProviders(<RegisterForm />)
+    const { user } = await renderWithRouter(<RegisterForm />, { initialPath: '/register' })
 
     await fillForm(user)
 
     expect(await screen.findByText('Cuenta creada')).toBeInTheDocument()
     expect(screen.getByText(/Org de Ana/)).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Iniciar sesión' })).toHaveAttribute('href', '/login')
     const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit]
     expect(url).toBe('/api/auth/register')
     expect(JSON.parse(init.body as string)).toEqual({
@@ -78,7 +79,7 @@ describe('RegisterForm', () => {
     mockFetch(
       Response.json({ status: 409, detail: 'Ese email ya está registrado' }, { status: 409 }),
     )
-    const { user } = renderWithProviders(<RegisterForm />)
+    const { user } = await renderWithRouter(<RegisterForm />, { initialPath: '/register' })
 
     await fillForm(user)
 
@@ -96,7 +97,7 @@ describe('RegisterForm', () => {
         { status: 400 },
       ),
     )
-    const { user } = renderWithProviders(<RegisterForm />)
+    const { user } = await renderWithRouter(<RegisterForm />, { initialPath: '/register' })
 
     await fillForm(user)
 

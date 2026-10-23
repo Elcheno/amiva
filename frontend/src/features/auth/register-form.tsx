@@ -2,9 +2,10 @@ import { useState, type FormEvent, type ReactNode } from 'react'
 import { msg } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react'
 import { Trans } from '@lingui/react/macro'
-import { Button } from '@/components/ui/button'
+import { Link } from '@tanstack/react-router'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { ApiError } from '@/lib/api'
 import { useRegister } from './api'
@@ -90,6 +91,11 @@ export function RegisterForm() {
             </Trans>
           </CardDescription>
         </CardHeader>
+        <CardContent>
+          <Link to="/login" className={buttonVariants({ size: 'lg', className: 'w-full' })}>
+            <Trans>Iniciar sesión</Trans>
+          </Link>
+        </CardContent>
       </Card>
     )
   }
@@ -169,6 +175,11 @@ export function RegisterForm() {
             <Button type="submit" size="lg" className="w-full" disabled={mutation.isPending}>
               {mutation.isPending ? <Trans>Creando cuenta…</Trans> : <Trans>Crear cuenta</Trans>}
             </Button>
+            <FieldDescription className="text-center">
+              <Trans>
+                ¿Ya tienes cuenta? <Link to="/login">Inicia sesión</Link>
+              </Trans>
+            </FieldDescription>
           </FieldGroup>
         </form>
       </CardContent>

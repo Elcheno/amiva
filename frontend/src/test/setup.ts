@@ -5,6 +5,9 @@ import { activateLocale, defaultLocale } from '@/lib/i18n'
 
 await activateLocale(defaultLocale)
 
+// jsdom no implementa scrollTo y el router lo llama al navegar
+window.scrollTo = () => {}
+
 afterEach(() => {
   cleanup()
 })

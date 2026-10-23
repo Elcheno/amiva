@@ -1,7 +1,12 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
+import { meQueryOptions } from '@/features/auth/api'
 import { RegisterForm } from '@/features/auth/register-form'
 
 export const Route = createFileRoute('/register')({
+  // Con sesión ya iniciada no tiene sentido el registro
+  beforeLoad: async ({ context }) => {
+    if (await context.queryClient.ensureQueryData(meQueryOptions)) throw redirect({ to: '/' })
+  },
   component: RegisterPage,
 })
 

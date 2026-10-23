@@ -68,3 +68,10 @@ Módulos: `users`, `fields`, `forms`, `answers`, `analysis`, `widgets`, `reports
 - `GET /actuator/health`: estado de la app y de ambas bases.
 - `GET /api/auth/csrf`: emite la cookie `XSRF-TOKEN`. Las peticiones que modifican datos la reenvían en `X-XSRF-TOKEN`.
 - `POST /api/auth/register`: crea usuario y su organización propia (201; 400 con `errors` por campo; 409 si el email existe).
+- `POST /api/auth/login`: `{email, password}`. Abre sesión (cookie `JSESSIONID`, sesión HTTP en memoria) y devuelve lo mismo que `/me` (200; 400 con `errors`; 401 genérico si el email o la contraseña no coinciden).
+
+## Sesión
+
+- `GET /api/auth/me`: usuario y organización de la sesión (`userId`, `email`, `displayName`, `orgId`, `orgName`).
+- `POST /api/auth/logout`: invalida la sesión y borra la cookie (204). Exige CSRF como cualquier POST.
+- Sin sesión, cualquier ruta protegida responde 401 con ProblemDetail (nunca redirige).
