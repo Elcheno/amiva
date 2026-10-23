@@ -1,0 +1,108 @@
+package com.amiva.users.domain;
+
+import java.time.Instant;
+import java.util.UUID;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
+import org.hibernate.annotations.UuidGenerator;
+
+@Entity
+@Table(name = "app_user")
+public class AppUser {
+
+    @Id
+    @UuidGenerator(style = UuidGenerator.Style.VERSION_7)
+    private UUID id;
+
+    @Column(nullable = false, length = 320)
+    private String email;
+
+    @Column(name = "email_verified", nullable = false)
+    private boolean emailVerified;
+
+    // NULL en usuarios solo OAuth
+    @Column(name = "password_hash")
+    private String passwordHash;
+
+    @Column(name = "display_name", nullable = false, length = 150)
+    private String displayName;
+
+    @Column(name = "platform_role", nullable = false, length = 20)
+    private String platformRole;
+
+    @Column(nullable = false)
+    private boolean enabled;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    private Instant updatedAt;
+
+    protected AppUser() {
+    }
+
+    // Usuario nuevo registrado con email y contraseña, pendiente de verificar el email
+    public static AppUser withPassword(String email, String passwordHash, String displayName) {
+        AppUser user = new AppUser();
+        user.email = email;
+        user.passwordHash = passwordHash;
+        user.displayName = displayName;
+        user.emailVerified = false;
+        user.platformRole = "user";
+        user.enabled = true;
+        return user;
+    }
+
+    @PrePersist
+    void onCreate() {
+        createdAt = Instant.now();
+        updatedAt = createdAt;
+    }
+
+    @PreUpdate
+    void onUpdate() {
+        updatedAt = Instant.now();
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public boolean isEmailVerified() {
+        return emailVerified;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public String getPlatformRole() {
+        return platformRole;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+}

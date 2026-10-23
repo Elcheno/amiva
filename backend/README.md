@@ -66,3 +66,5 @@ Módulos: `users`, `fields`, `forms`, `answers`, `analysis`, `widgets`, `reports
 ## Endpoints públicos
 
 - `GET /actuator/health`: estado de la app y de ambas bases.
+- `GET /api/auth/csrf`: emite la cookie `XSRF-TOKEN`. Las peticiones que modifican datos la reenvían en `X-XSRF-TOKEN`.
+- `POST /api/auth/register`: crea usuario y su organización propia (201; 400 con `errors` por campo; 409 si el email existe).
