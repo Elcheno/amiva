@@ -29,7 +29,8 @@ Usa `bun run test`, no `bun test` (este último lanza el runner de bun, no Vites
 
 ```
 src/
-  routes/       una ruta por fichero (routeTree.gen.ts se genera solo). /register: alta con email
+  routes/       una ruta por fichero (routeTree.gen.ts se genera solo). /login y /register son
+                públicas; las de _auth/ exigen sesión (si no, /login?redirect=<ruta>)
   features/     lógica por dominio (forms, answers, widgets…)
   components/   compartidos; ui/ es de shadcn
   lib/          api, query-client, i18n, utils

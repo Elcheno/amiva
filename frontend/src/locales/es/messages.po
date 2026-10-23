@@ -7,39 +7,63 @@ msgstr ""
 "X-Generator: @lingui/cli\n"
 "Language: es\n"
 
-#: src/routes/index.tsx:13
-msgid "Bienvenido a amiva"
-msgstr "Bienvenido a amiva"
+#: src/features/auth/login-form.tsx:141
+msgid "¿No tienes cuenta? <0>Regístrate</0>"
+msgstr "¿No tienes cuenta? <0>Regístrate</0>"
 
-#: src/features/auth/register-form.tsx:122
+#: src/features/auth/register-form.tsx:179
+msgid "¿Ya tienes cuenta? <0>Inicia sesión</0>"
+msgstr "¿Ya tienes cuenta? <0>Inicia sesión</0>"
+
+#: src/routes/_auth/index.tsx:29
+msgid "Cerrar sesión"
+msgstr "Cerrar sesión"
+
+#: src/features/auth/login-form.tsx:85
+#: src/features/auth/register-form.tsx:128
 msgid "Contraseña"
 msgstr "Contraseña"
 
-#: src/features/auth/register-form.tsx:170
+#: src/features/auth/register-form.tsx:176
 msgid "Creando cuenta…"
 msgstr "Creando cuenta…"
 
-#: src/features/auth/register-form.tsx:133
-#: src/features/auth/register-form.tsx:170
+#: src/features/auth/register-form.tsx:139
+#: src/features/auth/register-form.tsx:176
 msgid "Crear cuenta"
 msgstr "Crear cuenta"
 
-#: src/features/auth/register-form.tsx:85
+#: src/features/auth/register-form.tsx:86
 msgid "Cuenta creada"
 msgstr "Cuenta creada"
 
+#: src/features/auth/login-validation.ts:17
 #: src/features/auth/register-validation.ts:31
 msgid "El email no es válido"
 msgstr "El email no es válido"
 
-#: src/features/auth/register-form.tsx:115
+#: src/features/auth/login-form.tsx:78
+#: src/features/auth/register-form.tsx:121
 msgid "Email"
 msgstr "Email"
 
-#: src/routes/index.tsx:16
-msgid "Empezar"
-msgstr "Empezar"
+#: src/features/auth/login-form.tsx:129
+msgid "Email o contraseña incorrectos"
+msgstr "Email o contraseña incorrectos"
 
+#: src/features/auth/login-form.tsx:99
+msgid "Entra con tu email y tu contraseña."
+msgstr "Entra con tu email y tu contraseña."
+
+#: src/features/auth/login-form.tsx:138
+msgid "Entrando…"
+msgstr "Entrando…"
+
+#: src/features/auth/login-validation.ts:19
+msgid "Escribe tu contraseña"
+msgstr "Escribe tu contraseña"
+
+#: src/features/auth/login-validation.ts:15
 #: src/features/auth/register-validation.ts:29
 msgid "Escribe tu email"
 msgstr "Escribe tu email"
@@ -48,18 +72,29 @@ msgstr "Escribe tu email"
 msgid "Escribe tu nombre"
 msgstr "Escribe tu nombre"
 
-#: src/features/auth/register-form.tsx:19
+#: src/features/auth/register-form.tsx:20
 msgid "Ese email ya está registrado"
 msgstr "Ese email ya está registrado"
 
-#: src/features/auth/register-form.tsx:88
+#: src/features/auth/register-form.tsx:89
 msgid "Hemos creado tu cuenta ({email}) y tu organización «{orgName}»."
 msgstr "Hemos creado tu cuenta ({email}) y tu organización «{orgName}»."
 
-#: src/features/auth/register-validation.ts:39
+#: src/routes/_auth/index.tsx:19
+msgid "Hola, {name}"
+msgstr "Hola, {name}"
+
+#: src/features/auth/login-form.tsx:96
+#: src/features/auth/login-form.tsx:138
+#: src/features/auth/register-form.tsx:96
+msgid "Iniciar sesión"
+msgstr "Iniciar sesión"
+
+#: src/features/auth/register-validation.ts:35
 msgid "La contraseña es demasiado larga"
 msgstr "La contraseña es demasiado larga"
 
+#: src/features/auth/login-validation.ts:16
 #: src/features/auth/register-validation.ts:30
 msgid "Máximo {maxEmail} caracteres"
 msgstr "Máximo {maxEmail} caracteres"
@@ -68,18 +103,22 @@ msgstr "Máximo {maxEmail} caracteres"
 msgid "Máximo {maxName} caracteres"
 msgstr "Máximo {maxName} caracteres"
 
-#: src/features/auth/register-validation.ts:34
+#: src/features/auth/register-validation.ts:33
 msgid "Mínimo {passwordMin} caracteres"
 msgstr "Mínimo {passwordMin} caracteres"
 
-#: src/features/auth/register-form.tsx:166
+#: src/features/auth/register-form.tsx:172
 msgid "No se pudo crear la cuenta. Inténtalo de nuevo."
 msgstr "No se pudo crear la cuenta. Inténtalo de nuevo."
 
-#: src/features/auth/register-form.tsx:108
+#: src/features/auth/login-form.tsx:134
+msgid "No se pudo iniciar sesión. Inténtalo de nuevo."
+msgstr "No se pudo iniciar sesión. Inténtalo de nuevo."
+
+#: src/features/auth/register-form.tsx:114
 msgid "Nombre"
 msgstr "Nombre"
 
-#: src/features/auth/register-form.tsx:136
+#: src/features/auth/register-form.tsx:142
 msgid "Regístrate con tu email y una contraseña."
 msgstr "Regístrate con tu email y una contraseña."

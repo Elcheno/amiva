@@ -13,7 +13,7 @@ export type RegisterField = 'displayName' | 'email' | 'password'
 export type RegisterValues = Record<RegisterField, string>
 export type RegisterErrors = Partial<Record<RegisterField, MessageDescriptor>>
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+$/
+export const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+$/
 const utf8Length = (value: string) => new TextEncoder().encode(value).length
 
 export function validateRegister(values: RegisterValues): RegisterErrors {

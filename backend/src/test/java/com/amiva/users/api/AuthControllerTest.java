@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -12,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.UUID;
 
 import com.amiva.config.SecurityConfig;
+import com.amiva.users.application.CurrentUserService;
 import com.amiva.users.application.EmailAlreadyRegisteredException;
 import com.amiva.users.application.RegisterCommand;
 import com.amiva.users.application.RegistrationResult;
@@ -21,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -38,6 +41,12 @@ class AuthControllerTest {
 
     @MockitoBean
     RegistrationService registrationService;
+
+    @MockitoBean
+    CurrentUserService currentUserService;
+
+    @MockitoBean
+    UserDetailsService userDetailsService;
 
     @Test
     void registra201SinDevolverElHash() throws Exception {
@@ -103,6 +112,49 @@ class AuthControllerTest {
         mvc.perform(register(VALID_BODY)).andExpect(status().isForbidden());
 
         verifyNoInteractions(registrationService);
+    }
+
+    @Test
+    void login400ConErroresPorCampo() throws Exception {
+        String body = """
+                {"email": "no-es-email", "password": ""}
+                """;
+
+        mvc.perform(login(body).with(csrf()))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.errors.email").exists())
+                .andExpect(jsonPath("$.errors.password").exists());
+
+        verifyNoInteractions(userDetailsService);
+    }
+
+    @Test
+    void loginSinTokenCsrf403() throws Exception {
+        String body = """
+                {"email": "ana@example.com", "password": "secreta123"}
+                """;
+
+        mvc.perform(login(body)).andExpect(status().isForbidden());
+
+        verifyNoInteractions(userDetailsService);
+    }
+
+    @Test
+    void meSinSesion401SinRedirigir() throws Exception {
+        mvc.perform(get("/api/auth/me"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.status").value(401));
+    }
+
+    @Test
+    void logoutSinTokenCsrf403() throws Exception {
+        mvc.perform(post("/api/auth/logout")).andExpect(status().isForbidden());
+    }
+
+    private static MockHttpServletRequestBuilder login(String body) {
+        return post("/api/auth/login").contentType(MediaType.APPLICATION_JSON).content(body);
     }
 
     private static MockHttpServletRequestBuilder register(String body) {
