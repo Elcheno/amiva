@@ -1,0 +1,19 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "amiva-engine"
+version = "0.1.0"
+description = "Motor de cálculo de fórmulas de Amiva (sin estado)"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/amiva_engine"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,16 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2026-10-23 18:53+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: es\n"
+
+#: src/routes/index.tsx:13
+msgid "Bienvenido a amiva"
+msgstr "Bienvenido a amiva"
+
+#: src/routes/index.tsx:16
+msgid "Empezar"
+msgstr "Empezar"

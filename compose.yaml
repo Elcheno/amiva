@@ -1,0 +1,40 @@
+services:
+  postgres-core:
+    image: postgres:18
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: amiva_core
+      POSTGRES_USER: amiva_core
+      POSTGRES_PASSWORD: ${AMIVA_CORE_DB_PASSWORD:?Define AMIVA_CORE_DB_PASSWORD en .env}
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pgdata-core:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U amiva_core -d amiva_core"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  postgres-data:
+    image: postgres:18
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: amiva_data
+      POSTGRES_USER: amiva_data
+      POSTGRES_PASSWORD: ${AMIVA_DATA_DB_PASSWORD:?Define AMIVA_DATA_DB_PASSWORD en .env}
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - pgdata-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U amiva_data -d amiva_data"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  pgdata-core:
+  pgdata-data:

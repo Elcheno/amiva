@@ -1,0 +1,7 @@
+# SO/IDE y secretos: ver .gitignore de la raíz
+node_modules
+dist
+coverage
+*.local
+*.log
+.tanstack

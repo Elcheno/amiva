@@ -1,0 +1,15 @@
+# Global. Cada carpeta (backend/, frontend/, engine/, docs/) tiene su propio .gitignore.
+
+# Secretos
+.env
+.env.*
+!.env.example
+
+# SO / IDE
+.DS_Store
+.idea/
+.vscode/
+*.iml
+
+# Docs locales
+documentacion-proyecto.md
