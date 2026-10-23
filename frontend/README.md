@@ -5,7 +5,7 @@ SPA en React + Vite + TypeScript estricto. Gestor de paquetes: bun.
 ## Stack
 
 - Router: TanStack Router (rutas por ficheros en `src/routes`)
-- Datos: TanStack Query + `src/lib/api.ts` (todo bajo `/api`)
+- Datos: TanStack Query + `src/lib/api.ts` (todo bajo `/api`; añade `X-XSRF-TOKEN` en POST/PUT/PATCH/DELETE)
 - UI: Tailwind v4 + shadcn/ui (`src/components/ui`)
 - i18n: Lingui (catálogos `.po` en `src/locales`)
 - Tests: Vitest + Testing Library (jsdom)
@@ -29,7 +29,7 @@ Usa `bun run test`, no `bun test` (este último lanza el runner de bun, no Vites
 
 ```
 src/
-  routes/       una ruta por fichero (routeTree.gen.ts se genera solo)
+  routes/       una ruta por fichero (routeTree.gen.ts se genera solo). /register: alta con email
   features/     lógica por dominio (forms, answers, widgets…)
   components/   compartidos; ui/ es de shadcn
   lib/          api, query-client, i18n, utils

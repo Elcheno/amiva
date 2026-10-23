@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { api, ApiError } from '@/lib/api'
 
 function mockFetch(response: Response) {
@@ -7,8 +7,17 @@ function mockFetch(response: Response) {
   return fetchMock
 }
 
+function setCsrfCookie(value: string) {
+  document.cookie = `XSRF-TOKEN=${value}; path=/`
+}
+
+beforeEach(() => {
+  setCsrfCookie('token-1')
+})
+
 afterEach(() => {
   vi.unstubAllGlobals()
+  document.cookie = 'XSRF-TOKEN=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/'
 })
 
 describe('api', () => {
@@ -36,5 +45,38 @@ describe('api', () => {
 
     expect(error).toBeInstanceOf(ApiError)
     expect(error).toMatchObject({ status: 404, message: 'No existe' })
+  })
+
+  it('manda el token CSRF de la cookie en peticiones que modifican datos', async () => {
+    const fetchMock = mockFetch(Response.json({}))
+
+    await api('/forms', { method: 'POST', body: {} })
+
+    const [, init] = fetchMock.mock.calls[0] as [string, RequestInit]
+    expect(init.headers).toMatchObject({ 'X-XSRF-TOKEN': 'token-1' })
+  })
+
+  it('no manda el token CSRF en GET', async () => {
+    const fetchMock = mockFetch(Response.json({}))
+
+    await api('/forms')
+
+    const [, init] = fetchMock.mock.calls[0] as [string, RequestInit]
+    expect(init.headers).not.toHaveProperty('X-XSRF-TOKEN')
+  })
+
+  it('pide la cookie CSRF al backend si aún no existe', async () => {
+    document.cookie = 'XSRF-TOKEN=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/'
+    const fetchMock = vi.fn().mockImplementation(async (url: string) => {
+      if (url === '/api/auth/csrf') setCsrfCookie('token-2')
+      return Response.json({})
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    await api('/forms', { method: 'POST', body: {} })
+
+    expect(fetchMock.mock.calls.map(([url]) => url)).toEqual(['/api/auth/csrf', '/api/forms'])
+    const [, init] = fetchMock.mock.calls[1] as [string, RequestInit]
+    expect(init.headers).toMatchObject({ 'X-XSRF-TOKEN': 'token-2' })
   })
 })
