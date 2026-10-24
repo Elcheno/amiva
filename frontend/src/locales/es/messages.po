@@ -15,7 +15,20 @@ msgstr "¿No tienes cuenta? <0>Regístrate</0>"
 msgid "¿Ya tienes cuenta? <0>Inicia sesión</0>"
 msgstr "¿Ya tienes cuenta? <0>Inicia sesión</0>"
 
-#: src/routes/_auth/index.tsx:29
+#: src/features/orgs/role-label.ts:12
+msgid "Admin"
+msgstr "Admin"
+
+#: src/features/orgs/orgs-overview.tsx:58
+msgid "Aún no participas en ninguna organización"
+msgstr "Aún no participas en ninguna organización"
+
+#: src/features/orgs/members-list.tsx:13
+#: src/features/orgs/orgs-overview.tsx:16
+msgid "Cargando…"
+msgstr "Cargando…"
+
+#: src/features/orgs/org-header.tsx:35
 msgid "Cerrar sesión"
 msgstr "Cerrar sesión"
 
@@ -37,6 +50,11 @@ msgstr "Crear cuenta"
 msgid "Cuenta creada"
 msgstr "Cuenta creada"
 
+#: src/features/orgs/org-header.tsx:61
+#: src/features/orgs/orgs-overview.tsx:46
+msgid "Donde participo"
+msgstr "Donde participo"
+
 #: src/features/auth/login-validation.ts:17
 #: src/features/auth/register-validation.ts:31
 msgid "El email no es válido"
@@ -44,6 +62,7 @@ msgstr "El email no es válido"
 
 #: src/features/auth/login-form.tsx:78
 #: src/features/auth/register-form.tsx:121
+#: src/features/orgs/members-list.tsx:33
 msgid "Email"
 msgstr "Email"
 
@@ -80,10 +99,6 @@ msgstr "Ese email ya está registrado"
 msgid "Hemos creado tu cuenta ({email}) y tu organización «{orgName}»."
 msgstr "Hemos creado tu cuenta ({email}) y tu organización «{orgName}»."
 
-#: src/routes/_auth/index.tsx:19
-msgid "Hola, {name}"
-msgstr "Hola, {name}"
-
 #: src/features/auth/login-form.tsx:96
 #: src/features/auth/login-form.tsx:138
 #: src/features/auth/register-form.tsx:96
@@ -103,9 +118,34 @@ msgstr "Máximo {maxEmail} caracteres"
 msgid "Máximo {maxName} caracteres"
 msgstr "Máximo {maxName} caracteres"
 
+#: src/features/orgs/org-header.tsx:56
+#: src/features/orgs/orgs-overview.tsx:34
+msgid "Mi organización"
+msgstr "Mi organización"
+
+#: src/features/orgs/role-label.ts:14
+msgid "Miembro"
+msgstr "Miembro"
+
+#: src/routes/_auth/orgs/$orgId.tsx:49
+msgid "Miembros"
+msgstr "Miembros"
+
 #: src/features/auth/register-validation.ts:33
 msgid "Mínimo {passwordMin} caracteres"
 msgstr "Mínimo {passwordMin} caracteres"
+
+#: src/routes/_auth/index.tsx:24
+msgid "No perteneces a ninguna organización"
+msgstr "No perteneces a ninguna organización"
+
+#: src/features/orgs/orgs-overview.tsx:23
+msgid "No se pudieron cargar las organizaciones"
+msgstr "No se pudieron cargar las organizaciones"
+
+#: src/features/orgs/members-list.tsx:20
+msgid "No se pudieron cargar los miembros"
+msgstr "No se pudieron cargar los miembros"
 
 #: src/features/auth/register-form.tsx:172
 msgid "No se pudo crear la cuenta. Inténtalo de nuevo."
@@ -115,10 +155,47 @@ msgstr "No se pudo crear la cuenta. Inténtalo de nuevo."
 msgid "No se pudo iniciar sesión. Inténtalo de nuevo."
 msgstr "No se pudo iniciar sesión. Inténtalo de nuevo."
 
+#: src/routes/_auth/orgs/$orgId.tsx:63
+msgid "No tienes acceso a esta organización"
+msgstr "No tienes acceso a esta organización"
+
+#: src/features/orgs/orgs-overview.tsx:40
+msgid "No tienes organización propia"
+msgstr "No tienes organización propia"
+
 #: src/features/auth/register-form.tsx:114
+#: src/features/orgs/members-list.tsx:30
 msgid "Nombre"
 msgstr "Nombre"
+
+#: src/features/orgs/org-header.tsx:50
+msgid "Organización"
+msgstr "Organización"
+
+#: src/routes/_auth/orgs/index.tsx:17
+msgid "Organizaciones"
+msgstr "Organizaciones"
+
+#: src/features/orgs/role-label.ts:10
+msgid "Propietario"
+msgstr "Propietario"
 
 #: src/features/auth/register-form.tsx:142
 msgid "Regístrate con tu email y una contraseña."
 msgstr "Regístrate con tu email y una contraseña."
+
+#: src/features/orgs/members-list.tsx:36
+msgid "Rol"
+msgstr "Rol"
+
+#: src/features/orgs/org-header.tsx:24
+msgid "Todas las organizaciones"
+msgstr "Todas las organizaciones"
+
+#: src/routes/_auth/orgs/$orgId.tsx:44
+msgid "Tu rol: {role}"
+msgstr "Tu rol: {role}"
+
+#: src/routes/_auth/orgs/$orgId.tsx:66
+msgid "Ver mis organizaciones"
+msgstr "Ver mis organizaciones"
