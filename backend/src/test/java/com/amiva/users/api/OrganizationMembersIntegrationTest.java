@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.amiva.TestCleanup;
 import com.amiva.users.application.RegisterCommand;
 import com.amiva.users.application.RegistrationResult;
 import com.amiva.users.application.RegistrationService;
@@ -64,11 +65,7 @@ class OrganizationMembersIntegrationTest {
     // membership se borra en cascada con la organización y el usuario
     @AfterEach
     void cleanUp() {
-        for (String email : emails) {
-            jdbc.update("DELETE FROM organization WHERE owner_id IN (SELECT id FROM app_user WHERE lower(email) = lower(?))",
-                    email);
-            jdbc.update("DELETE FROM app_user WHERE lower(email) = lower(?)", email);
-        }
+        TestCleanup.deleteUsers(jdbc, emails);
     }
 
     @Test
@@ -103,6 +100,7 @@ class OrganizationMembersIntegrationTest {
                 .andExpect(jsonPath("$.role").value("ADMIN"));
 
         assertThat(roleOf(ana.orgId(), carlos.userId())).isEqualTo("ADMIN");
+        assertThat(roleChangesLogged(ana.orgId())).isEqualTo(1);
     }
 
     @Test
@@ -132,6 +130,7 @@ class OrganizationMembersIntegrationTest {
                 .andExpect(status().isForbidden());
 
         assertThat(roleOf(ana.orgId(), carlos.userId())).isEqualTo("MEMBER");
+        assertThat(roleChangesLogged(ana.orgId())).isZero();
     }
 
     @Test
@@ -227,6 +226,12 @@ class OrganizationMembersIntegrationTest {
     private String roleOf(UUID orgId, UUID userId) {
         return jdbc.queryForObject("SELECT role FROM membership WHERE organization_id = ? AND user_id = ?",
                 String.class, orgId, userId);
+    }
+
+    private Integer roleChangesLogged(UUID orgId) {
+        return jdbc.queryForObject(
+                "SELECT count(*) FROM activity WHERE organization_id = ? AND action = 'MEMBER_ROLE_CHANGED'",
+                Integer.class, orgId);
     }
 
     private MockHttpSession login(RegistrationResult user) throws Exception {

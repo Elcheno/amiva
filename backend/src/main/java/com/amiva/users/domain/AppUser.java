@@ -3,6 +3,7 @@ package com.amiva.users.domain;
 import java.time.Instant;
 import java.util.UUID;
 
+import com.amiva.shared.domain.Actor;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -96,6 +97,15 @@ public class AppUser {
 
     public boolean isEnabled() {
         return enabled;
+    }
+
+    public boolean isSuperadmin() {
+        return "superadmin".equals(platformRole);
+    }
+
+    // Como actor de una acción (actividad, eventos)
+    public Actor asActor() {
+        return new Actor(id, displayName, isSuperadmin());
     }
 
     public Instant getCreatedAt() {

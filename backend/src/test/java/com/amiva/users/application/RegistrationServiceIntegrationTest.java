@@ -7,6 +7,7 @@ import static org.mockito.Mockito.doReturn;
 
 import java.util.UUID;
 
+import com.amiva.TestCleanup;
 import com.amiva.users.infrastructure.AppUserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -32,9 +33,7 @@ class RegistrationServiceIntegrationTest {
 
     @AfterEach
     void cleanUp() {
-        jdbc.update("DELETE FROM organization WHERE owner_id IN (SELECT id FROM app_user WHERE lower(email) = lower(?))",
-                email);
-        jdbc.update("DELETE FROM app_user WHERE lower(email) = lower(?)", email);
+        TestCleanup.deleteUsers(jdbc, email);
     }
 
     @Test

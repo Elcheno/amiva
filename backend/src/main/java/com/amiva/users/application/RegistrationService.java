@@ -5,10 +5,12 @@ import java.time.ZoneId;
 import com.amiva.users.domain.AppUser;
 import com.amiva.users.domain.Membership;
 import com.amiva.users.domain.Organization;
+import com.amiva.users.domain.OrganizationCreated;
 import com.amiva.users.infrastructure.AppUserRepository;
 import com.amiva.users.infrastructure.MembershipRepository;
 import com.amiva.users.infrastructure.OrganizationRepository;
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,13 +26,15 @@ public class RegistrationService {
     private final OrganizationRepository organizations;
     private final MembershipRepository memberships;
     private final PasswordEncoder passwordEncoder;
+    private final ApplicationEventPublisher events;
 
     public RegistrationService(AppUserRepository users, OrganizationRepository organizations,
-            MembershipRepository memberships, PasswordEncoder passwordEncoder) {
+            MembershipRepository memberships, PasswordEncoder passwordEncoder, ApplicationEventPublisher events) {
         this.users = users;
         this.organizations = organizations;
         this.memberships = memberships;
         this.passwordEncoder = passwordEncoder;
+        this.events = events;
     }
 
     // Crea el usuario, su organización propia y su membership OWNER en una sola transacción
@@ -56,6 +60,7 @@ public class RegistrationService {
 
         Organization org = organizations.save(Organization.ownedBy(user, resolveTimezone(command.timezone())));
         memberships.save(Membership.owner(org));
+        events.publishEvent(new OrganizationCreated(org.getId(), org.getName(), user.asActor()));
 
         return new RegistrationResult(user.getId(), user.getEmail(), user.getDisplayName(), org.getId(), org.getName());
     }
