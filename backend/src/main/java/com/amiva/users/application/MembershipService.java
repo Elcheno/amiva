@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import com.amiva.users.domain.AppUser;
 import com.amiva.users.domain.Membership;
+import com.amiva.users.domain.OrgPermission;
 import com.amiva.users.domain.OrgRole;
 import com.amiva.users.infrastructure.AppUserRepository;
 import com.amiva.users.infrastructure.MembershipRepository;
@@ -26,16 +27,18 @@ public class MembershipService {
 
     private final MembershipRepository memberships;
     private final AppUserRepository users;
+    private final OrgPermissionService permissions;
 
-    public MembershipService(MembershipRepository memberships, AppUserRepository users) {
+    public MembershipService(MembershipRepository memberships, AppUserRepository users,
+            OrgPermissionService permissions) {
         this.memberships = memberships;
         this.users = users;
+        this.permissions = permissions;
     }
 
-    // Cualquier miembro de la organización puede ver la lista
     @Transactional(readOnly = true)
     public List<OrganizationMember> listMembers(UUID actorId, UUID orgId) {
-        requireMembership(actorId, orgId);
+        permissions.require(actorId, orgId, OrgPermission.VIEW_MEMBERS);
 
         List<Membership> members = memberships.findByOrganizationId(orgId);
         Map<UUID, AppUser> usersById = users.findAllById(members.stream().map(Membership::getUserId).toList())
@@ -52,8 +55,7 @@ public class MembershipService {
     // Solo ADMIN o MEMBER como nuevo rol; el OWNER no se cambia
     @Transactional
     public OrganizationMember changeRole(UUID actorId, UUID orgId, UUID targetUserId, OrgRole newRole) {
-        Membership actor = requireMembership(actorId, orgId);
-        requireCanManageRoles(actor);
+        permissions.require(actorId, orgId, OrgPermission.MANAGE_ROLES);
 
         Membership target = memberships.findByOrganizationIdAndUserId(orgId, targetUserId)
                 .orElseThrow(MemberNotFoundException::new);
@@ -63,19 +65,6 @@ public class MembershipService {
         // flush para que updated_at refleje el cambio en la respuesta
         target = memberships.saveAndFlush(target);
         return toMember(target, user);
-    }
-
-    // Organización inexistente y actor no miembro dan el mismo 404
-    private Membership requireMembership(UUID actorId, UUID orgId) {
-        return memberships.findByOrganizationIdAndUserId(orgId, actorId)
-                .orElseThrow(OrganizationNotFoundException::new);
-    }
-
-    // Comprobación de permisos inline; se centralizará en la issue #8
-    private static void requireCanManageRoles(Membership actor) {
-        if (!actor.getRole().canManageRoles()) {
-            throw new RoleChangeForbiddenException();
-        }
     }
 
     private static OrganizationMember toMember(Membership membership, AppUser user) {

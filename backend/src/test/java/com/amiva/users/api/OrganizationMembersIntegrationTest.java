@@ -120,7 +120,8 @@ class OrganizationMembersIntegrationTest {
 
         mvc.perform(changeRole(ana.orgId(), outsider.userId(), "MEMBER").session(login(bea)))
                 .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$.title").value("Sin permiso para cambiar roles"));
+                .andExpect(jsonPath("$.title").value("Sin permiso para cambiar roles"))
+                .andExpect(jsonPath("$.permission").value("MANAGE_ROLES"));
 
         assertThat(roleOf(ana.orgId(), outsider.userId())).isEqualTo("ADMIN");
     }
