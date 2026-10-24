@@ -4,7 +4,7 @@ import com.amiva.users.application.EmailAlreadyRegisteredException;
 import com.amiva.users.application.InvalidCredentialsException;
 import com.amiva.users.application.MemberNotFoundException;
 import com.amiva.users.application.OrganizationNotFoundException;
-import com.amiva.users.application.RoleChangeForbiddenException;
+import com.amiva.users.application.PermissionDeniedException;
 import com.amiva.users.domain.OwnerRoleImmutableException;
 import com.amiva.users.domain.RoleNotAssignableException;
 import org.springframework.http.HttpStatus;
@@ -43,10 +43,12 @@ class UsersExceptionHandler {
         return problem;
     }
 
-    @ExceptionHandler(RoleChangeForbiddenException.class)
-    ProblemDetail roleChangeForbidden(RoleChangeForbiddenException e) {
+    // Incluye el permiso que falta para que el front pueda reaccionar sin parsear el texto
+    @ExceptionHandler(PermissionDeniedException.class)
+    ProblemDetail permissionDenied(PermissionDeniedException e) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage());
-        problem.setTitle("Sin permiso para cambiar roles");
+        problem.setTitle("Sin permiso para " + e.getPermission().action());
+        problem.setProperty("permission", e.getPermission().name());
         return problem;
     }
 

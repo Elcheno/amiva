@@ -25,8 +25,12 @@ public enum OrgRole {
         return role;
     }
 
+    // Matriz de permisos: el único sitio donde se decide qué puede hacer cada rol.
     // Solo el OWNER da y quita ADMIN; así ningún admin puede quitárselo a otro
-    public boolean canManageRoles() {
-        return this == OWNER;
+    public boolean has(OrgPermission permission) {
+        return switch (permission) {
+            case VIEW_MEMBERS -> true;
+            case MANAGE_ROLES -> this == OWNER;
+        };
     }
 }

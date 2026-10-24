@@ -80,5 +80,7 @@ Módulos: `users`, `fields`, `forms`, `answers`, `analysis`, `widgets`, `reports
 
 Roles por organización: `OWNER` (uno, no transferible), `ADMIN`, `MEMBER`. Si la organización no existe o no eres miembro: 404.
 
+Permisos: cada caso de uso llama a `OrgPermissionService.require(actor, org, OrgPermission.X)` al empezar. Qué rol tiene cada permiso se decide solo en `OrgRole.has`. Sin permiso: 403 ProblemDetail con `permission` (p. ej. `"MANAGE_ROLES"`). Acción nueva = valor nuevo en `OrgPermission` + su caso en `OrgRole.has` + test 403.
+
 - `GET /api/orgs/{orgId}/members`: miembros (`userId`, `displayName`, `email`, `role`, `createdAt`), OWNER primero y luego por nombre. Cualquier miembro.
 - `PATCH /api/orgs/{orgId}/members/{userId}`: `{"role": "ADMIN" | "MEMBER"}`, devuelve el miembro (200; 400 rol no válido u OWNER; 403 si no eres el OWNER; 404 si no es miembro; 409 si es el OWNER). Solo el OWNER.
