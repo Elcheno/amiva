@@ -10,10 +10,12 @@ import static org.mockito.Mockito.when;
 import java.sql.SQLException;
 import java.util.UUID;
 
+import com.amiva.shared.domain.Actor;
 import com.amiva.users.domain.AppUser;
 import com.amiva.users.domain.Membership;
 import com.amiva.users.domain.OrgRole;
 import com.amiva.users.domain.Organization;
+import com.amiva.users.domain.OrganizationCreated;
 import com.amiva.users.infrastructure.AppUserRepository;
 import com.amiva.users.infrastructure.MembershipRepository;
 import com.amiva.users.infrastructure.OrganizationRepository;
@@ -24,6 +26,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -43,11 +46,14 @@ class RegistrationServiceTest {
     @Mock
     PasswordEncoder passwordEncoder;
 
+    @Mock
+    ApplicationEventPublisher events;
+
     RegistrationService service;
 
     @BeforeEach
     void setUp() {
-        service = new RegistrationService(users, organizations, memberships, passwordEncoder);
+        service = new RegistrationService(users, organizations, memberships, passwordEncoder, events);
     }
 
     @Test
@@ -76,6 +82,12 @@ class RegistrationServiceTest {
         assertThat(membership.getValue().getOrganizationId()).isEqualTo(orgId);
         assertThat(membership.getValue().getUserId()).isEqualTo(userId);
         assertThat(membership.getValue().getRole()).isEqualTo(OrgRole.OWNER);
+
+        ArgumentCaptor<OrganizationCreated> event = ArgumentCaptor.forClass(OrganizationCreated.class);
+        verify(events).publishEvent(event.capture());
+        assertThat(event.getValue().organizationId()).isEqualTo(orgId);
+        assertThat(event.getValue().organizationName()).isEqualTo("Org de Ana");
+        assertThat(event.getValue().actor()).isEqualTo(new Actor(userId, "Ana", false));
 
         assertThat(result).isEqualTo(new RegistrationResult(userId, "ana@example.com", "Ana", orgId, "Org de Ana"));
     }
@@ -122,6 +134,7 @@ class RegistrationServiceTest {
         verify(users, never()).saveAndFlush(any());
         verify(organizations, never()).save(any());
         verify(memberships, never()).save(any());
+        verify(events, never()).publishEvent(any(Object.class));
     }
 
     @Test

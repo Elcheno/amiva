@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.UUID;
 
+import com.amiva.TestCleanup;
 import com.amiva.users.application.RegisterCommand;
 import com.amiva.users.application.RegistrationResult;
 import com.amiva.users.application.RegistrationService;
@@ -53,9 +54,7 @@ class LoginIntegrationTest {
 
     @AfterEach
     void cleanUp() {
-        jdbc.update("DELETE FROM organization WHERE owner_id IN (SELECT id FROM app_user WHERE lower(email) = lower(?))",
-                email);
-        jdbc.update("DELETE FROM app_user WHERE lower(email) = lower(?)", email);
+        TestCleanup.deleteUsers(jdbc, email);
     }
 
     @Test

@@ -45,6 +45,7 @@ API de amiva y toda la lógica de negocio. Volver al [README principal](../READM
 
 - Sin claves foráneas ni joins entre bases: la integridad la garantiza el backend.
 - `submission` y `answer` son inmutables: los triggers bloquean UPDATE, DELETE y TRUNCATE.
+- `activity` (core) también es inmutable con los mismos triggers. Una organización con actividad no se puede borrar (FK RESTRICT). En tests, `TestCleanup` desactiva el trigger solo dentro de su transacción.
 - IDs con `uuidv7()`.
 - Las migraciones se ejecutan solas al arrancar, antes de JPA. Nunca se edita una migración ya aplicada: se crea una nueva `V<n>__descripcion.sql`.
 
@@ -84,3 +85,11 @@ Permisos: cada caso de uso llama a `OrgPermissionService.require(actor, org, Org
 
 - `GET /api/orgs/{orgId}/members`: miembros (`userId`, `displayName`, `email`, `role`, `createdAt`), OWNER primero y luego por nombre. Cualquier miembro.
 - `PATCH /api/orgs/{orgId}/members/{userId}`: `{"role": "ADMIN" | "MEMBER"}`, devuelve el miembro (200; 400 rol no válido u OWNER; 403 si no eres el OWNER; 404 si no es miembro; 409 si es el OWNER). Solo el OWNER.
+
+## Actividad
+
+Registro append-only por organización (`activity`): autor (`actor_id` + copia de `actor_name`, `anonymous` si es superadmin), `action`, `target_type` + `target_id`, `details` (JSONB con nombres copiados y valores) y `occurred_at`. El texto lo monta el front a partir de `action` + `details`.
+
+Los casos de uso publican un evento de dominio (`OrganizationCreated`, `MemberRoleChanged`…) con `ApplicationEventPublisher`; `ActivityRecorder` lo escucha con `@EventListener` dentro de la misma transacción (`MANDATORY`): si falla el registro, falla la acción. Acción nueva = evento + valor en `ActivityAction` + método en `ActivityRecorder` + test.
+
+Acciones actuales: `ORG_CREATED` (registro), `MEMBER_ROLE_CHANGED` (solo si el rol cambia de verdad).

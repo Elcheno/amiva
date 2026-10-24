@@ -9,10 +9,12 @@ import java.util.stream.Collectors;
 
 import com.amiva.users.domain.AppUser;
 import com.amiva.users.domain.Membership;
+import com.amiva.users.domain.MemberRoleChanged;
 import com.amiva.users.domain.OrgPermission;
 import com.amiva.users.domain.OrgRole;
 import com.amiva.users.infrastructure.AppUserRepository;
 import com.amiva.users.infrastructure.MembershipRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,12 +30,14 @@ public class MembershipService {
     private final MembershipRepository memberships;
     private final AppUserRepository users;
     private final OrgPermissionService permissions;
+    private final ApplicationEventPublisher events;
 
     public MembershipService(MembershipRepository memberships, AppUserRepository users,
-            OrgPermissionService permissions) {
+            OrgPermissionService permissions, ApplicationEventPublisher events) {
         this.memberships = memberships;
         this.users = users;
         this.permissions = permissions;
+        this.events = events;
     }
 
     @Transactional(readOnly = true)
@@ -61,9 +65,17 @@ public class MembershipService {
                 .orElseThrow(MemberNotFoundException::new);
         AppUser user = users.findById(targetUserId).orElseThrow(MemberNotFoundException::new);
 
+        OrgRole previousRole = target.getRole();
         target.changeRole(newRole);
         // flush para que updated_at refleje el cambio en la respuesta
         target = memberships.saveAndFlush(target);
+        // Sin cambio real no hay nada que registrar
+        if (previousRole != newRole) {
+            // El actor ya pasó require: es miembro y existe
+            AppUser actor = users.findById(actorId).orElseThrow();
+            events.publishEvent(new MemberRoleChanged(orgId, actor.asActor(), user.getId(), user.getDisplayName(),
+                    previousRole, newRole));
+        }
         return toMember(target, user);
     }
 
