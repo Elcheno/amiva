@@ -1,33 +1,29 @@
 import { Trans } from '@lingui/react/macro'
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { Button } from '@/components/ui/button'
-import { useLogout } from '@/features/auth/api'
+import { createFileRoute, redirect } from '@tanstack/react-router'
+import { OrgHeader } from '@/features/orgs/org-header'
+import { orgsQueryOptions } from '@/features/orgs/api'
+import { pickTargetOrg, readLastOrgId } from '@/features/orgs/select-org'
 
+// / no tiene contenido propio: lleva a la última org usada o a la propia
 export const Route = createFileRoute('/_auth/')({
-  component: Home,
+  beforeLoad: async ({ context }) => {
+    const orgs = await context.queryClient.ensureQueryData(orgsQueryOptions)
+    const orgId = pickTargetOrg(orgs, readLastOrgId())
+    if (orgId) throw redirect({ to: '/orgs/$orgId', params: { orgId }, replace: true })
+  },
+  component: NoOrgs,
 })
 
-function Home() {
+function NoOrgs() {
   const { me } = Route.useRouteContext()
-  const name = me.displayName
-  const navigate = useNavigate()
-  const logout = useLogout()
-
   return (
-    <main className="flex min-h-svh flex-col items-center justify-center gap-4 p-4">
-      <h1 className="text-2xl font-semibold">
-        <Trans>Hola, {name}</Trans>
-      </h1>
-      <p className="text-muted-foreground">{me.orgName}</p>
-      <Button
-        variant="outline"
-        disabled={logout.isPending}
-        onClick={() =>
-          logout.mutate(undefined, { onSuccess: () => navigate({ to: '/login', replace: true }) })
-        }
-      >
-        <Trans>Cerrar sesión</Trans>
-      </Button>
-    </main>
+    <>
+      <OrgHeader userName={me.displayName} />
+      <main className="p-4">
+        <p className="text-muted-foreground">
+          <Trans>No perteneces a ninguna organización</Trans>
+        </p>
+      </main>
+    </>
   )
 }

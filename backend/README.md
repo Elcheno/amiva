@@ -83,6 +83,8 @@ Roles por organización: `OWNER` (uno, no transferible), `ADMIN`, `MEMBER`. Si l
 
 Permisos: cada caso de uso llama a `OrgPermissionService.require(actor, org, OrgPermission.X)` al empezar. Qué rol tiene cada permiso se decide solo en `OrgRole.has`. Sin permiso: 403 ProblemDetail con `permission` (p. ej. `"MANAGE_ROLES"`). Acción nueva = valor nuevo en `OrgPermission` + su caso en `OrgRole.has` + test 403.
 
+- `GET /api/orgs`: organizaciones donde soy miembro (`orgId`, `name`, `role`, `own`), la propia primero y luego por nombre. Sin permiso específico: solo devuelve las tuyas.
+- `GET /api/orgs/{orgId}`: lo mismo para una organización (200; 404 si no existe o no eres miembro). Cualquier miembro.
 - `GET /api/orgs/{orgId}/members`: miembros (`userId`, `displayName`, `email`, `role`, `createdAt`), OWNER primero y luego por nombre. Cualquier miembro.
 - `PATCH /api/orgs/{orgId}/members/{userId}`: `{"role": "ADMIN" | "MEMBER"}`, devuelve el miembro (200; 400 rol no válido u OWNER; 403 si no eres el OWNER; 404 si no es miembro; 409 si es el OWNER). Solo el OWNER.
 
