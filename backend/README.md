@@ -75,3 +75,10 @@ Módulos: `users`, `fields`, `forms`, `answers`, `analysis`, `widgets`, `reports
 - `GET /api/auth/me`: usuario y organización de la sesión (`userId`, `email`, `displayName`, `orgId`, `orgName`).
 - `POST /api/auth/logout`: invalida la sesión y borra la cookie (204). Exige CSRF como cualquier POST.
 - Sin sesión, cualquier ruta protegida responde 401 con ProblemDetail (nunca redirige).
+
+## Organización
+
+Roles por organización: `OWNER` (uno, no transferible), `ADMIN`, `MEMBER`. Si la organización no existe o no eres miembro: 404.
+
+- `GET /api/orgs/{orgId}/members`: miembros (`userId`, `displayName`, `email`, `role`, `createdAt`), OWNER primero y luego por nombre. Cualquier miembro.
+- `PATCH /api/orgs/{orgId}/members/{userId}`: `{"role": "ADMIN" | "MEMBER"}`, devuelve el miembro (200; 400 rol no válido u OWNER; 403 si no eres el OWNER; 404 si no es miembro; 409 si es el OWNER). Solo el OWNER.

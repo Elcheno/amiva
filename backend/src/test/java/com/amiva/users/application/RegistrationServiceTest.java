@@ -11,8 +11,11 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 import com.amiva.users.domain.AppUser;
+import com.amiva.users.domain.Membership;
+import com.amiva.users.domain.OrgRole;
 import com.amiva.users.domain.Organization;
 import com.amiva.users.infrastructure.AppUserRepository;
+import com.amiva.users.infrastructure.MembershipRepository;
 import com.amiva.users.infrastructure.OrganizationRepository;
 import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,13 +38,16 @@ class RegistrationServiceTest {
     OrganizationRepository organizations;
 
     @Mock
+    MembershipRepository memberships;
+
+    @Mock
     PasswordEncoder passwordEncoder;
 
     RegistrationService service;
 
     @BeforeEach
     void setUp() {
-        service = new RegistrationService(users, organizations, passwordEncoder);
+        service = new RegistrationService(users, organizations, memberships, passwordEncoder);
     }
 
     @Test
@@ -65,6 +71,11 @@ class RegistrationServiceTest {
         verify(organizations).save(org.capture());
         assertThat(org.getValue().getOwnerId()).isEqualTo(userId);
         assertThat(org.getValue().getTimezone()).isEqualTo("Europe/Madrid");
+        ArgumentCaptor<Membership> membership = ArgumentCaptor.forClass(Membership.class);
+        verify(memberships).save(membership.capture());
+        assertThat(membership.getValue().getOrganizationId()).isEqualTo(orgId);
+        assertThat(membership.getValue().getUserId()).isEqualTo(userId);
+        assertThat(membership.getValue().getRole()).isEqualTo(OrgRole.OWNER);
 
         assertThat(result).isEqualTo(new RegistrationResult(userId, "ana@example.com", "Ana", orgId, "Org de Ana"));
     }
@@ -110,6 +121,7 @@ class RegistrationServiceTest {
 
         verify(users, never()).saveAndFlush(any());
         verify(organizations, never()).save(any());
+        verify(memberships, never()).save(any());
     }
 
     @Test

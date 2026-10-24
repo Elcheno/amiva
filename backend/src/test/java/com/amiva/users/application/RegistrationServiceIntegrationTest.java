@@ -49,6 +49,27 @@ class RegistrationServiceIntegrationTest {
     }
 
     @Test
+    void creaMembershipOwnerDeSuOrganizacion() {
+        RegistrationResult result = service.register(new RegisterCommand(email, "secreta123", "Ana", null));
+
+        assertThat(jdbc.queryForList("SELECT role FROM membership WHERE organization_id = ? AND user_id = ?",
+                String.class, result.orgId(), result.userId())).containsExactly("OWNER");
+    }
+
+    // V3 hace backfill y el registro crea la fila: cada organización tiene exactamente su dueño como OWNER
+    @Test
+    void cadaOrganizacionTieneSuDuenoComoOwner() {
+        service.register(new RegisterCommand(email, "secreta123", "Ana", null));
+
+        assertThat(jdbc.queryForObject("""
+                SELECT count(*) FROM organization o
+                WHERE NOT EXISTS (SELECT 1 FROM membership m
+                                  WHERE m.organization_id = o.id AND m.user_id = o.owner_id AND m.role = 'OWNER')
+                   OR (SELECT count(*) FROM membership m WHERE m.organization_id = o.id AND m.role = 'OWNER') <> 1
+                """, Integer.class)).isZero();
+    }
+
+    @Test
     void indiceUnicoSinMayusculasEnCarrera() {
         service.register(new RegisterCommand(email, "secreta123", "Ana", null));
         // Simula que otra petición pasó la comprobación previa a la vez

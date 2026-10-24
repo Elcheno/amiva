@@ -3,8 +3,10 @@ package com.amiva.users.application;
 import java.time.ZoneId;
 
 import com.amiva.users.domain.AppUser;
+import com.amiva.users.domain.Membership;
 import com.amiva.users.domain.Organization;
 import com.amiva.users.infrastructure.AppUserRepository;
+import com.amiva.users.infrastructure.MembershipRepository;
 import com.amiva.users.infrastructure.OrganizationRepository;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -20,16 +22,18 @@ public class RegistrationService {
 
     private final AppUserRepository users;
     private final OrganizationRepository organizations;
+    private final MembershipRepository memberships;
     private final PasswordEncoder passwordEncoder;
 
     public RegistrationService(AppUserRepository users, OrganizationRepository organizations,
-            PasswordEncoder passwordEncoder) {
+            MembershipRepository memberships, PasswordEncoder passwordEncoder) {
         this.users = users;
         this.organizations = organizations;
+        this.memberships = memberships;
         this.passwordEncoder = passwordEncoder;
     }
 
-    // Crea el usuario y su organización propia en una sola transacción
+    // Crea el usuario, su organización propia y su membership OWNER en una sola transacción
     @Transactional
     public RegistrationResult register(RegisterCommand command) {
         String email = command.email().strip();
@@ -51,6 +55,7 @@ public class RegistrationService {
         }
 
         Organization org = organizations.save(Organization.ownedBy(user, resolveTimezone(command.timezone())));
+        memberships.save(Membership.owner(org));
 
         return new RegistrationResult(user.getId(), user.getEmail(), user.getDisplayName(), org.getId(), org.getName());
     }
