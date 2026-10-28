@@ -7,6 +7,7 @@ import com.amiva.activity.domain.ActivityAction;
 import com.amiva.activity.domain.ActivityTargetType;
 import com.amiva.activity.infrastructure.ActivityRepository;
 import com.amiva.users.domain.MemberInvited;
+import com.amiva.users.domain.MemberJoined;
 import com.amiva.users.domain.MemberRoleChanged;
 import com.amiva.users.domain.OrganizationCreated;
 import org.springframework.context.event.EventListener;
@@ -46,5 +47,12 @@ public class ActivityRecorder {
         activities.save(Activity.of(event.organizationId(), event.actor(), ActivityAction.MEMBER_INVITED,
                 ActivityTargetType.MEMBER, event.inviteeUserId(),
                 Map.of("memberName", event.inviteeName(), "role", event.role().name())));
+    }
+
+    // Invitación aceptada. Actor y target: el nuevo miembro
+    @EventListener
+    public void on(MemberJoined event) {
+        activities.save(Activity.of(event.organizationId(), event.actor(), ActivityAction.MEMBER_JOINED,
+                ActivityTargetType.MEMBER, event.actor().userId(), Map.of("role", event.role().name())));
     }
 }

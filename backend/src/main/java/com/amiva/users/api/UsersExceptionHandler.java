@@ -3,14 +3,17 @@ package com.amiva.users.api;
 import com.amiva.users.application.AlreadyMemberException;
 import com.amiva.users.application.EmailAlreadyRegisteredException;
 import com.amiva.users.application.EmailAlreadyVerifiedException;
+import com.amiva.users.application.EmailNotVerifiedException;
 import com.amiva.users.application.InvalidCredentialsException;
 import com.amiva.users.application.InvalidVerificationTokenException;
 import com.amiva.users.application.InvitationEmailException;
+import com.amiva.users.application.InvitationNotFoundException;
 import com.amiva.users.application.MemberNotFoundException;
 import com.amiva.users.application.OrganizationNotFoundException;
 import com.amiva.users.application.PermissionDeniedException;
 import com.amiva.users.application.UserNotFoundException;
 import com.amiva.users.application.VerificationResendTooSoonException;
+import com.amiva.users.domain.InvitationNotPendingException;
 import com.amiva.users.domain.OwnerRoleImmutableException;
 import com.amiva.users.domain.RoleNotAssignableException;
 import org.springframework.http.HttpHeaders;
@@ -120,6 +123,28 @@ class UsersExceptionHandler {
     ProblemDetail invitationEmail(InvitationEmailException e) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.SERVICE_UNAVAILABLE, e.getMessage());
         problem.setTitle("Email no enviado");
+        return problem;
+    }
+
+    @ExceptionHandler(InvitationNotFoundException.class)
+    ProblemDetail invitationNotFound(InvitationNotFoundException e) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+        problem.setTitle("Invitación no disponible");
+        return problem;
+    }
+
+    // Mismo 404 que si no existiera: no se distingue una invitación ya respondida
+    @ExceptionHandler(InvitationNotPendingException.class)
+    ProblemDetail invitationNotPending(InvitationNotPendingException e) {
+        return invitationNotFound(new InvitationNotFoundException());
+    }
+
+    // reason: EMAIL_NOT_VERIFIED, para que el front muestre el aviso sin parsear el texto
+    @ExceptionHandler(EmailNotVerifiedException.class)
+    ProblemDetail emailNotVerified(EmailNotVerifiedException e) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage());
+        problem.setTitle("Email sin verificar");
+        problem.setProperty("reason", "EMAIL_NOT_VERIFIED");
         return problem;
     }
 }

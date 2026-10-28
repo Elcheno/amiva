@@ -2,6 +2,7 @@ import { Trans } from '@lingui/react/macro'
 import { createFileRoute } from '@tanstack/react-router'
 import { OrgHeader } from '@/features/orgs/org-header'
 import { OrgsOverview } from '@/features/orgs/orgs-overview'
+import { ReceivedInvitations } from '@/features/orgs/received-invitations'
 
 export const Route = createFileRoute('/_auth/orgs/')({
   component: OrgsPage,
@@ -16,6 +17,7 @@ function OrgsPage() {
         <h1 className="text-2xl font-semibold">
           <Trans>Organizaciones</Trans>
         </h1>
+        <ReceivedInvitations />
         <OrgsOverview />
       </main>
     </>

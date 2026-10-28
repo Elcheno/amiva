@@ -15,6 +15,14 @@ msgstr "¿No tienes cuenta? <0>Regístrate</0>"
 msgid "¿Ya tienes cuenta? <0>Inicia sesión</0>"
 msgstr "¿Ya tienes cuenta? <0>Inicia sesión</0>"
 
+#: src/features/orgs/received-invitations.tsx:47
+msgid "{invitedBy} te invita como {role}"
+msgstr "{invitedBy} te invita como {role}"
+
+#: src/features/orgs/invitation-actions.tsx:42
+msgid "Aceptar"
+msgstr "Aceptar"
+
 #: src/features/orgs/role-label.ts:12
 msgid "Admin"
 msgstr "Admin"
@@ -35,6 +43,7 @@ msgstr "Buscando…"
 msgid "Buscar usuario"
 msgstr "Buscar usuario"
 
+#: src/features/orgs/invitation-by-token.tsx:27
 #: src/features/orgs/members-list.tsx:13
 #: src/features/orgs/orgs-overview.tsx:16
 #: src/features/orgs/pending-invitations.tsx:15
@@ -153,6 +162,11 @@ msgstr "Ese usuario ya es miembro de la organización"
 msgid "Espera un minuto antes de pedir otro"
 msgstr "Espera un minuto antes de pedir otro"
 
+#: src/features/orgs/invitation-actions.tsx:73
+#: src/features/orgs/invitation-by-token.tsx:36
+msgid "Esta invitación no es para tu cuenta o ya no está disponible"
+msgstr "Esta invitación no es para tu cuenta o ya no está disponible"
+
 #: src/features/auth/verify-email.tsx:43
 msgid "Este enlace ya se ha usado"
 msgstr "Este enlace ya se ha usado"
@@ -179,6 +193,10 @@ msgstr "Iniciar sesión"
 msgid "Inténtalo de nuevo más tarde."
 msgstr "Inténtalo de nuevo más tarde."
 
+#: src/routes/_auth/invite.$token.tsx:19
+msgid "Invitación"
+msgstr "Invitación"
+
 #: src/features/orgs/invite-member.tsx:160
 msgid "Invitación enviada a {invitedName}"
 msgstr "Invitación enviada a {invitedName}"
@@ -186,6 +204,14 @@ msgstr "Invitación enviada a {invitedName}"
 #: src/features/orgs/invite-member.tsx:229
 msgid "Invitación pendiente"
 msgstr "Invitación pendiente"
+
+#: src/features/orgs/invitation-by-token.tsx:18
+msgid "Invitación rechazada"
+msgstr "Invitación rechazada"
+
+#: src/features/orgs/received-invitations.tsx:17
+msgid "Invitaciones"
+msgstr "Invitaciones"
 
 #: src/routes/_auth/orgs/$orgId.tsx:62
 msgid "Invitaciones pendientes"
@@ -206,6 +232,10 @@ msgstr "Invitar a <0>{selectedName}</0>"
 #: src/features/orgs/invite-member.tsx:41
 msgid "Invitar a la organización"
 msgstr "Invitar a la organización"
+
+#: src/features/orgs/invitation-by-token.tsx:52
+msgid "Ir a mis organizaciones"
+msgstr "Ir a mis organizaciones"
 
 #: src/features/auth/verify-email.tsx:67
 msgid "Ir al inicio"
@@ -269,6 +299,10 @@ msgstr "No se pudieron cargar los miembros"
 msgid "No se pudo buscar. Inténtalo de nuevo."
 msgstr "No se pudo buscar. Inténtalo de nuevo."
 
+#: src/features/orgs/invitation-by-token.tsx:38
+msgid "No se pudo cargar la invitación"
+msgstr "No se pudo cargar la invitación"
+
 #: src/features/auth/register-form.tsx:172
 msgid "No se pudo crear la cuenta. Inténtalo de nuevo."
 msgstr "No se pudo crear la cuenta. Inténtalo de nuevo."
@@ -288,6 +322,10 @@ msgstr "No se pudo enviar la invitación. Inténtalo de nuevo."
 #: src/features/auth/login-form.tsx:134
 msgid "No se pudo iniciar sesión. Inténtalo de nuevo."
 msgstr "No se pudo iniciar sesión. Inténtalo de nuevo."
+
+#: src/features/orgs/invitation-actions.tsx:78
+msgid "No se pudo responder a la invitación. Inténtalo de nuevo."
+msgstr "No se pudo responder a la invitación. Inténtalo de nuevo."
 
 #: src/features/auth/verify-email.tsx:45
 msgid "No se pudo verificar tu email"
@@ -319,13 +357,17 @@ msgstr "Nombre o @username"
 msgid "Organización"
 msgstr "Organización"
 
-#: src/routes/_auth/orgs/index.tsx:17
+#: src/routes/_auth/orgs/index.tsx:18
 msgid "Organizaciones"
 msgstr "Organizaciones"
 
 #: src/features/orgs/role-label.ts:10
 msgid "Propietario"
 msgstr "Propietario"
+
+#: src/features/orgs/invitation-actions.tsx:55
+msgid "Rechazar"
+msgstr "Rechazar"
 
 #: src/features/auth/verify-email-banner.tsx:29
 msgid "Reenviar"
@@ -353,6 +395,10 @@ msgstr "Si ya verificaste tu email, no tienes que hacer nada más."
 msgid "Te hemos enviado otro enlace"
 msgstr "Te hemos enviado otro enlace"
 
+#: src/features/orgs/received-invitations.tsx:51
+msgid "Te invitan como {role}"
+msgstr "Te invitan como {role}"
+
 #: src/features/orgs/org-header.tsx:25
 msgid "Todas las organizaciones"
 msgstr "Todas las organizaciones"
@@ -369,6 +415,11 @@ msgstr "Un momento, por favor."
 msgid "Ver mis organizaciones"
 msgstr "Ver mis organizaciones"
 
+#: src/features/orgs/invitation-actions.tsx:60
+#: src/features/orgs/invitation-actions.tsx:76
+msgid "Verifica tu email para responder a la invitación"
+msgstr "Verifica tu email para responder a la invitación"
+
 #: src/features/auth/verify-email-banner.tsx:21
 msgid "Verifica tu email: te hemos enviado un enlace a {email}"
 msgstr "Verifica tu email: te hemos enviado un enlace a {email}"
@@ -376,3 +427,7 @@ msgstr "Verifica tu email: te hemos enviado un enlace a {email}"
 #: src/features/auth/verify-email.tsx:40
 msgid "Verificando tu email…"
 msgstr "Verificando tu email…"
+
+#: src/features/orgs/invitation-actions.tsx:75
+msgid "Ya eres miembro de esta organización"
+msgstr "Ya eres miembro de esta organización"
