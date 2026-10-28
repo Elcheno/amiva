@@ -49,7 +49,7 @@ class EmailVerificationServiceTest {
     EmailVerificationService service;
 
     private final UUID userId = UUID.randomUUID();
-    private final AppUser user = withId(AppUser.withPassword("ana@example.com", "hash", "Ana"), userId);
+    private final AppUser user = withId(AppUser.withPassword("ana@example.com", "hash", "ana", "Ana"), userId);
 
     @BeforeEach
     void setUp() {

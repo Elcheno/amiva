@@ -8,11 +8,12 @@ import { groupOrgs } from './select-org'
 
 interface OrgHeaderProps {
   userName: string
+  username: string
   // Org abierta: con ella se muestra el selector y el enlace a todas
   currentOrgId?: string
 }
 
-export function OrgHeader({ userName, currentOrgId }: OrgHeaderProps) {
+export function OrgHeader({ userName, username, currentOrgId }: OrgHeaderProps) {
   const navigate = useNavigate()
   const logout = useLogout()
 
@@ -24,7 +25,9 @@ export function OrgHeader({ userName, currentOrgId }: OrgHeaderProps) {
           <Trans>Todas las organizaciones</Trans>
         </Link>
       )}
-      <span className="ml-auto text-sm text-muted-foreground">{userName}</span>
+      <span className="ml-auto text-sm text-muted-foreground">
+        {userName} <span className="text-xs">@{username}</span>
+      </span>
       <Button
         variant="outline"
         disabled={logout.isPending}

@@ -28,7 +28,7 @@ msgstr "Aún no participas en ninguna organización"
 msgid "Cargando…"
 msgstr "Cargando…"
 
-#: src/features/orgs/org-header.tsx:35
+#: src/features/orgs/org-header.tsx:38
 msgid "Cerrar sesión"
 msgstr "Cerrar sesión"
 
@@ -54,7 +54,7 @@ msgstr "Crear cuenta"
 msgid "Cuenta creada"
 msgstr "Cuenta creada"
 
-#: src/features/orgs/org-header.tsx:61
+#: src/features/orgs/org-header.tsx:64
 #: src/features/orgs/orgs-overview.tsx:46
 msgid "Donde participo"
 msgstr "Donde participo"
@@ -158,7 +158,7 @@ msgstr "Máximo {maxEmail} caracteres"
 msgid "Máximo {maxName} caracteres"
 msgstr "Máximo {maxName} caracteres"
 
-#: src/features/orgs/org-header.tsx:56
+#: src/features/orgs/org-header.tsx:59
 #: src/features/orgs/orgs-overview.tsx:34
 msgid "Mi organización"
 msgstr "Mi organización"
@@ -216,7 +216,7 @@ msgstr "No tienes organización propia"
 msgid "Nombre"
 msgstr "Nombre"
 
-#: src/features/orgs/org-header.tsx:50
+#: src/features/orgs/org-header.tsx:53
 msgid "Organización"
 msgstr "Organización"
 
@@ -248,7 +248,7 @@ msgstr "Si ya verificaste tu email, no tienes que hacer nada más."
 msgid "Te hemos enviado otro enlace"
 msgstr "Te hemos enviado otro enlace"
 
-#: src/features/orgs/org-header.tsx:24
+#: src/features/orgs/org-header.tsx:25
 msgid "Todas las organizaciones"
 msgstr "Todas las organizaciones"
 

@@ -27,14 +27,17 @@ public class RegistrationService {
     private final OrganizationRepository organizations;
     private final MembershipRepository memberships;
     private final PasswordEncoder passwordEncoder;
+    private final UsernameGenerator usernameGenerator;
     private final ApplicationEventPublisher events;
 
     public RegistrationService(AppUserRepository users, OrganizationRepository organizations,
-            MembershipRepository memberships, PasswordEncoder passwordEncoder, ApplicationEventPublisher events) {
+            MembershipRepository memberships, PasswordEncoder passwordEncoder, UsernameGenerator usernameGenerator,
+            ApplicationEventPublisher events) {
         this.users = users;
         this.organizations = organizations;
         this.memberships = memberships;
         this.passwordEncoder = passwordEncoder;
+        this.usernameGenerator = usernameGenerator;
         this.events = events;
     }
 
@@ -48,7 +51,9 @@ public class RegistrationService {
             throw new EmailAlreadyRegisteredException();
         }
 
-        AppUser user = AppUser.withPassword(email, passwordEncoder.encode(command.password()), displayName);
+        // Username provisional aleatorio; el usuario podrá cambiarlo
+        String username = usernameGenerator.generateUnique();
+        AppUser user = AppUser.withPassword(email, passwordEncoder.encode(command.password()), username, displayName);
         try {
             // flush para que una carrera con el mismo email salte aquí y no al hacer commit
             user = users.saveAndFlush(user);
@@ -65,7 +70,8 @@ public class RegistrationService {
         // El email de verificación sale tras el commit (VerificationEmailListener)
         events.publishEvent(new UserRegistered(user.getId(), user.getEmail(), user.getDisplayName()));
 
-        return new RegistrationResult(user.getId(), user.getEmail(), user.getDisplayName(), org.getId(), org.getName());
+        return new RegistrationResult(user.getId(), user.getEmail(), user.getUsername(), user.getDisplayName(),
+                org.getId(), org.getName());
     }
 
     // Zona IANA conocida; si falta o no es válida, UTC

@@ -36,7 +36,7 @@ function OrgPage() {
 
   return (
     <>
-      <OrgHeader userName={me.displayName} currentOrgId={orgId} />
+      <OrgHeader userName={me.displayName} username={me.username} currentOrgId={orgId} />
       <main className="mx-auto flex w-full max-w-3xl flex-col gap-6 p-4">
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl font-semibold">{org.name}</h1>

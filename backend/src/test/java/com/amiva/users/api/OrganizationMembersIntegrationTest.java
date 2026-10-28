@@ -76,9 +76,11 @@ class OrganizationMembersIntegrationTest {
                 .andExpect(jsonPath("$[0].userId").value(ana.userId().toString()))
                 .andExpect(jsonPath("$[0].role").value("OWNER"))
                 .andExpect(jsonPath("$[0].email").value(ana.email()))
+                .andExpect(jsonPath("$[0].username").value(ana.username()))
                 .andExpect(jsonPath("$[0].displayName").value("Ana"))
                 .andExpect(jsonPath("$[0].createdAt").exists())
                 .andExpect(jsonPath("$[1].displayName").value("Bea"))
+                .andExpect(jsonPath("$[1].username").value(bea.username()))
                 .andExpect(jsonPath("$[1].role").value("ADMIN"))
                 .andExpect(jsonPath("$[2].displayName").value("carlos"))
                 .andExpect(jsonPath("$[2].role").value("MEMBER"));
@@ -97,6 +99,7 @@ class OrganizationMembersIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userId").value(carlos.userId().toString()))
                 .andExpect(jsonPath("$.displayName").value("carlos"))
+                .andExpect(jsonPath("$.username").value(carlos.username()))
                 .andExpect(jsonPath("$.role").value("ADMIN"));
 
         assertThat(roleOf(ana.orgId(), carlos.userId())).isEqualTo("ADMIN");

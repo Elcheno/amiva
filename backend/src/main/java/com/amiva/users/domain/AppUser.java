@@ -30,6 +30,10 @@ public class AppUser {
     @Column(name = "password_hash")
     private String passwordHash;
 
+    // En minúsculas y único sin distinguir mayúsculas (ver Username)
+    @Column(nullable = false, length = Username.MAX_LENGTH)
+    private String username;
+
     @Column(name = "display_name", nullable = false, length = 150)
     private String displayName;
 
@@ -49,9 +53,10 @@ public class AppUser {
     }
 
     // Usuario nuevo registrado con email y contraseña, pendiente de verificar el email
-    public static AppUser withPassword(String email, String passwordHash, String displayName) {
+    public static AppUser withPassword(String email, String passwordHash, String username, String displayName) {
         AppUser user = new AppUser();
         user.email = email;
+        user.username = username;
         user.passwordHash = passwordHash;
         user.displayName = displayName;
         user.emailVerified = false;
@@ -89,6 +94,10 @@ public class AppUser {
 
     public String getPasswordHash() {
         return passwordHash;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public String getDisplayName() {

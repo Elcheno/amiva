@@ -28,8 +28,8 @@ class OrgPermissionServiceTest {
 
     OrgPermissionService service;
 
-    private final AppUser owner = withId(AppUser.withPassword("ana@example.com", "hash", "Ana"), UUID.randomUUID());
-    private final AppUser admin = withId(AppUser.withPassword("bea@example.com", "hash", "Bea"), UUID.randomUUID());
+    private final AppUser owner = withId(AppUser.withPassword("ana@example.com", "hash", "ana", "Ana"), UUID.randomUUID());
+    private final AppUser admin = withId(AppUser.withPassword("bea@example.com", "hash", "bea", "Bea"), UUID.randomUUID());
     private final Organization org = withId(Organization.ownedBy(owner, "UTC"), UUID.randomUUID());
 
     @BeforeEach

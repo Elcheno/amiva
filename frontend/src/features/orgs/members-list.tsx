@@ -40,7 +40,10 @@ export function MembersList({ orgId }: { orgId: string }) {
       <tbody>
         {members.map((member) => (
           <tr key={member.userId} className="border-t">
-            <td className="py-2">{member.displayName}</td>
+            <td className="py-2">
+              <div>{member.displayName}</div>
+              <div className="text-xs text-muted-foreground">@{member.username}</div>
+            </td>
             <td className="py-2">{member.email}</td>
             <td className="py-2">{roleLabel(member.role)}</td>
           </tr>

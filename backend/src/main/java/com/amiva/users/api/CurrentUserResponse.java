@@ -5,11 +5,11 @@ import java.util.UUID;
 import com.amiva.users.application.CurrentUser;
 
 // Mismo cuerpo en /me y en /login
-public record CurrentUserResponse(UUID userId, String email, String displayName, UUID orgId, String orgName,
-        boolean emailVerified) {
+public record CurrentUserResponse(UUID userId, String email, String username, String displayName, UUID orgId,
+        String orgName, boolean emailVerified) {
 
     static CurrentUserResponse from(CurrentUser user) {
-        return new CurrentUserResponse(user.userId(), user.email(), user.displayName(), user.orgId(),
-                user.orgName(), user.emailVerified());
+        return new CurrentUserResponse(user.userId(), user.email(), user.username(), user.displayName(),
+                user.orgId(), user.orgName(), user.emailVerified());
     }
 }

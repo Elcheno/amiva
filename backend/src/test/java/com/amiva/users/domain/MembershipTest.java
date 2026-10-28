@@ -10,8 +10,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 class MembershipTest {
 
-    private final AppUser owner = withId(AppUser.withPassword("ana@example.com", "hash", "Ana"), UUID.randomUUID());
-    private final AppUser other = withId(AppUser.withPassword("bea@example.com", "hash", "Bea"), UUID.randomUUID());
+    private final AppUser owner = withId(AppUser.withPassword("ana@example.com", "hash", "ana", "Ana"), UUID.randomUUID());
+    private final AppUser other = withId(AppUser.withPassword("bea@example.com", "hash", "bea", "Bea"), UUID.randomUUID());
     private final Organization org = withId(Organization.ownedBy(owner, "UTC"), UUID.randomUUID());
 
     @Test

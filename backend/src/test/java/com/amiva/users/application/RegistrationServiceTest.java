@@ -49,13 +49,16 @@ class RegistrationServiceTest {
     PasswordEncoder passwordEncoder;
 
     @Mock
+    UsernameGenerator usernameGenerator;
+
+    @Mock
     ApplicationEventPublisher events;
 
     RegistrationService service;
 
     @BeforeEach
     void setUp() {
-        service = new RegistrationService(users, organizations, memberships, passwordEncoder, events);
+        service = new RegistrationService(users, organizations, memberships, passwordEncoder, usernameGenerator, events);
     }
 
     @Test
@@ -63,6 +66,7 @@ class RegistrationServiceTest {
         UUID userId = UUID.randomUUID();
         UUID orgId = UUID.randomUUID();
         when(passwordEncoder.encode("secreta123")).thenReturn("hash");
+        when(usernameGenerator.generateUnique()).thenReturn("nutria-dormilona-42");
         when(users.saveAndFlush(any())).thenAnswer(inv -> withId(inv.getArgument(0), userId));
         when(organizations.save(any())).thenAnswer(inv -> withId(inv.getArgument(0), orgId));
 
@@ -72,6 +76,7 @@ class RegistrationServiceTest {
         ArgumentCaptor<AppUser> user = ArgumentCaptor.forClass(AppUser.class);
         verify(users).saveAndFlush(user.capture());
         assertThat(user.getValue().getPasswordHash()).isEqualTo("hash");
+        assertThat(user.getValue().getUsername()).isEqualTo("nutria-dormilona-42");
         assertThat(user.getValue().isEmailVerified()).isFalse();
         assertThat(user.getValue().getPlatformRole()).isEqualTo("user");
 
@@ -91,7 +96,8 @@ class RegistrationServiceTest {
                 new OrganizationCreated(orgId, "Org de Ana", new Actor(userId, "Ana", false)),
                 new UserRegistered(userId, "ana@example.com", "Ana"));
 
-        assertThat(result).isEqualTo(new RegistrationResult(userId, "ana@example.com", "Ana", orgId, "Org de Ana"));
+        assertThat(result).isEqualTo(new RegistrationResult(userId, "ana@example.com", "nutria-dormilona-42", "Ana",
+                orgId, "Org de Ana"));
     }
 
     @Test
@@ -120,7 +126,7 @@ class RegistrationServiceTest {
 
     @Test
     void nombreDeOrganizacionNoSuperaElMaximo() {
-        AppUser owner = withId(AppUser.withPassword("a@b.c", "hash", "x".repeat(150)), UUID.randomUUID());
+        AppUser owner = withId(AppUser.withPassword("a@b.c", "hash", "abc", "x".repeat(150)), UUID.randomUUID());
 
         assertThat(Organization.ownedBy(owner, "UTC").getName()).hasSize(Organization.NAME_MAX_LENGTH);
     }
@@ -133,6 +139,7 @@ class RegistrationServiceTest {
                 new RegisterCommand("ana@example.com", "secreta123", "Ana", null)))
                 .isInstanceOf(EmailAlreadyRegisteredException.class);
 
+        verify(usernameGenerator, never()).generateUnique();
         verify(users, never()).saveAndFlush(any());
         verify(organizations, never()).save(any());
         verify(memberships, never()).save(any());

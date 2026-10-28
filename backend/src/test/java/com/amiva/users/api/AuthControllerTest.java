@@ -54,12 +54,14 @@ class AuthControllerTest {
         UUID orgId = UUID.randomUUID();
         when(registrationService.register(
                 new RegisterCommand("Ana@Example.com", "secreta123", "Ana", "Europe/Madrid")))
-                .thenReturn(new RegistrationResult(userId, "Ana@Example.com", "Ana", orgId, "Org de Ana"));
+                .thenReturn(new RegistrationResult(userId, "Ana@Example.com", "nutria-dormilona-42", "Ana",
+                        orgId, "Org de Ana"));
 
         mvc.perform(register(VALID_BODY).with(csrf()))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.userId").value(userId.toString()))
                 .andExpect(jsonPath("$.email").value("Ana@Example.com"))
+                .andExpect(jsonPath("$.username").value("nutria-dormilona-42"))
                 .andExpect(jsonPath("$.displayName").value("Ana"))
                 .andExpect(jsonPath("$.orgId").value(orgId.toString()))
                 .andExpect(jsonPath("$.orgName").value("Org de Ana"))

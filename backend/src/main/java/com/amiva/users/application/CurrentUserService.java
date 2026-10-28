@@ -28,7 +28,7 @@ public class CurrentUserService {
                 .filter(AppUser::isEnabled)
                 .map(user -> {
                     Optional<Organization> org = organizations.findByOwnerId(user.getId());
-                    return new CurrentUser(user.getId(), user.getEmail(), user.getDisplayName(),
+                    return new CurrentUser(user.getId(), user.getEmail(), user.getUsername(), user.getDisplayName(),
                             org.map(Organization::getId).orElse(null), org.map(Organization::getName).orElse(null),
                             user.isEmailVerified());
                 });
