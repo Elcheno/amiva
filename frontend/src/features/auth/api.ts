@@ -15,6 +15,7 @@ export interface CurrentUser {
   displayName: string
   orgId: string
   orgName: string
+  emailVerified: boolean
 }
 
 export type RegisterResponse = CurrentUser
@@ -71,5 +72,37 @@ export function useLogout() {
     mutationFn: logout,
     // Nada de la sesión anterior debe quedar en caché
     onSuccess: () => queryClient.clear(),
+  })
+}
+
+// Token del enlace del email. 400 con problem.reason: INVALID, EXPIRED o USED
+export function verifyEmail(token: string) {
+  return api<void>('/auth/verify-email', { method: 'POST', body: { token } })
+}
+
+export function useVerifyEmail() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: verifyEmail,
+    // Si hay sesión, el aviso de verificar el email debe desaparecer
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: meQueryOptions.queryKey }),
+  })
+}
+
+// 429 si no ha pasado un minuto desde el último; 409 si ya está verificado
+export function resendVerification() {
+  return api<void>('/auth/verify-email/resend', { method: 'POST' })
+}
+
+export function useResendVerification() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: resendVerification,
+    onError: (error) => {
+      // Ya verificado (p. ej. en otra pestaña): se refresca /me y el aviso se va
+      if (error instanceof ApiError && error.status === 409) {
+        return queryClient.invalidateQueries({ queryKey: meQueryOptions.queryKey })
+      }
+    },
   })
 }

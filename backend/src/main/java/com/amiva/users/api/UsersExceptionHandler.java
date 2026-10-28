@@ -1,14 +1,19 @@
 package com.amiva.users.api;
 
 import com.amiva.users.application.EmailAlreadyRegisteredException;
+import com.amiva.users.application.EmailAlreadyVerifiedException;
 import com.amiva.users.application.InvalidCredentialsException;
+import com.amiva.users.application.InvalidVerificationTokenException;
 import com.amiva.users.application.MemberNotFoundException;
 import com.amiva.users.application.OrganizationNotFoundException;
 import com.amiva.users.application.PermissionDeniedException;
+import com.amiva.users.application.VerificationResendTooSoonException;
 import com.amiva.users.domain.OwnerRoleImmutableException;
 import com.amiva.users.domain.RoleNotAssignableException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -64,5 +69,32 @@ class UsersExceptionHandler {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
         problem.setTitle("Rol no válido");
         return problem;
+    }
+
+    // reason: INVALID, EXPIRED o USED, para que el front muestre el mensaje adecuado
+    @ExceptionHandler(InvalidVerificationTokenException.class)
+    ProblemDetail invalidVerificationToken(InvalidVerificationTokenException e) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
+        problem.setTitle("Enlace de verificación no válido");
+        problem.setProperty("reason", e.getReason().name());
+        return problem;
+    }
+
+    @ExceptionHandler(EmailAlreadyVerifiedException.class)
+    ProblemDetail emailAlreadyVerified(EmailAlreadyVerifiedException e) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
+        problem.setTitle("Email ya verificado");
+        return problem;
+    }
+
+    // Retry-After en segundos (redondeado hacia arriba)
+    @ExceptionHandler(VerificationResendTooSoonException.class)
+    ResponseEntity<ProblemDetail> verificationResendTooSoon(VerificationResendTooSoonException e) {
+        long seconds = Math.max(1, (e.getRetryAfter().toMillis() + 999) / 1000);
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.TOO_MANY_REQUESTS, e.getMessage());
+        problem.setTitle("Demasiados reenvíos");
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                .header(HttpHeaders.RETRY_AFTER, String.valueOf(seconds))
+                .body(problem);
     }
 }

@@ -32,6 +32,10 @@ msgstr "Cargando…"
 msgid "Cerrar sesión"
 msgstr "Cerrar sesión"
 
+#: src/features/auth/verify-email.tsx:57
+msgid "Comprueba que has copiado el enlace completo o pide otro desde la aplicación."
+msgstr "Comprueba que has copiado el enlace completo o pide otro desde la aplicación."
+
 #: src/features/auth/login-form.tsx:85
 #: src/features/auth/register-form.tsx:128
 msgid "Contraseña"
@@ -60,6 +64,14 @@ msgstr "Donde participo"
 msgid "El email no es válido"
 msgstr "El email no es válido"
 
+#: src/features/auth/verify-email.tsx:42
+msgid "El enlace ha caducado"
+msgstr "El enlace ha caducado"
+
+#: src/features/auth/verify-email.tsx:44
+msgid "El enlace no es válido"
+msgstr "El enlace no es válido"
+
 #: src/features/auth/login-form.tsx:78
 #: src/features/auth/register-form.tsx:121
 #: src/features/orgs/members-list.tsx:33
@@ -69,6 +81,10 @@ msgstr "Email"
 #: src/features/auth/login-form.tsx:129
 msgid "Email o contraseña incorrectos"
 msgstr "Email o contraseña incorrectos"
+
+#: src/features/auth/verify-email.tsx:41
+msgid "Email verificado"
+msgstr "Email verificado"
 
 #: src/features/auth/login-form.tsx:99
 msgid "Entra con tu email y tu contraseña."
@@ -95,15 +111,39 @@ msgstr "Escribe tu nombre"
 msgid "Ese email ya está registrado"
 msgstr "Ese email ya está registrado"
 
+#: src/features/auth/verify-email-banner.tsx:40
+msgid "Espera un minuto antes de pedir otro"
+msgstr "Espera un minuto antes de pedir otro"
+
+#: src/features/auth/verify-email.tsx:43
+msgid "Este enlace ya se ha usado"
+msgstr "Este enlace ya se ha usado"
+
+#: src/features/auth/verify-email.tsx:49
+msgid "Gracias. Tu email ya está confirmado."
+msgstr "Gracias. Tu email ya está confirmado."
+
 #: src/features/auth/register-form.tsx:89
 msgid "Hemos creado tu cuenta ({email}) y tu organización «{orgName}»."
 msgstr "Hemos creado tu cuenta ({email}) y tu organización «{orgName}»."
+
+#: src/features/auth/verify-email.tsx:51
+msgid "Inicia sesión y pide otro enlace desde el aviso de la parte superior."
+msgstr "Inicia sesión y pide otro enlace desde el aviso de la parte superior."
 
 #: src/features/auth/login-form.tsx:96
 #: src/features/auth/login-form.tsx:138
 #: src/features/auth/register-form.tsx:96
 msgid "Iniciar sesión"
 msgstr "Iniciar sesión"
+
+#: src/features/auth/verify-email.tsx:61
+msgid "Inténtalo de nuevo más tarde."
+msgstr "Inténtalo de nuevo más tarde."
+
+#: src/features/auth/verify-email.tsx:67
+msgid "Ir al inicio"
+msgstr "Ir al inicio"
 
 #: src/features/auth/register-validation.ts:35
 msgid "La contraseña es demasiado larga"
@@ -151,9 +191,17 @@ msgstr "No se pudieron cargar los miembros"
 msgid "No se pudo crear la cuenta. Inténtalo de nuevo."
 msgstr "No se pudo crear la cuenta. Inténtalo de nuevo."
 
+#: src/features/auth/verify-email-banner.tsx:45
+msgid "No se pudo enviar el email. Inténtalo de nuevo."
+msgstr "No se pudo enviar el email. Inténtalo de nuevo."
+
 #: src/features/auth/login-form.tsx:134
 msgid "No se pudo iniciar sesión. Inténtalo de nuevo."
 msgstr "No se pudo iniciar sesión. Inténtalo de nuevo."
+
+#: src/features/auth/verify-email.tsx:45
+msgid "No se pudo verificar tu email"
+msgstr "No se pudo verificar tu email"
 
 #: src/routes/_auth/orgs/$orgId.tsx:63
 msgid "No tienes acceso a esta organización"
@@ -180,6 +228,10 @@ msgstr "Organizaciones"
 msgid "Propietario"
 msgstr "Propietario"
 
+#: src/features/auth/verify-email-banner.tsx:29
+msgid "Reenviar"
+msgstr "Reenviar"
+
 #: src/features/auth/register-form.tsx:142
 msgid "Regístrate con tu email y una contraseña."
 msgstr "Regístrate con tu email y una contraseña."
@@ -187,6 +239,14 @@ msgstr "Regístrate con tu email y una contraseña."
 #: src/features/orgs/members-list.tsx:36
 msgid "Rol"
 msgstr "Rol"
+
+#: src/features/auth/verify-email.tsx:54
+msgid "Si ya verificaste tu email, no tienes que hacer nada más."
+msgstr "Si ya verificaste tu email, no tienes que hacer nada más."
+
+#: src/features/auth/verify-email-banner.tsx:35
+msgid "Te hemos enviado otro enlace"
+msgstr "Te hemos enviado otro enlace"
 
 #: src/features/orgs/org-header.tsx:24
 msgid "Todas las organizaciones"
@@ -196,6 +256,18 @@ msgstr "Todas las organizaciones"
 msgid "Tu rol: {role}"
 msgstr "Tu rol: {role}"
 
+#: src/features/auth/verify-email.tsx:48
+msgid "Un momento, por favor."
+msgstr "Un momento, por favor."
+
 #: src/routes/_auth/orgs/$orgId.tsx:66
 msgid "Ver mis organizaciones"
 msgstr "Ver mis organizaciones"
+
+#: src/features/auth/verify-email-banner.tsx:21
+msgid "Verifica tu email: te hemos enviado un enlace a {email}"
+msgstr "Verifica tu email: te hemos enviado un enlace a {email}"
+
+#: src/features/auth/verify-email.tsx:40
+msgid "Verificando tu email…"
+msgstr "Verificando tu email…"

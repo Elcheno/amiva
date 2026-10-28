@@ -29,7 +29,8 @@ public class CurrentUserService {
                 .map(user -> {
                     Optional<Organization> org = organizations.findByOwnerId(user.getId());
                     return new CurrentUser(user.getId(), user.getEmail(), user.getDisplayName(),
-                            org.map(Organization::getId).orElse(null), org.map(Organization::getName).orElse(null));
+                            org.map(Organization::getId).orElse(null), org.map(Organization::getName).orElse(null),
+                            user.isEmailVerified());
                 });
     }
 }
