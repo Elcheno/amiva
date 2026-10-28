@@ -112,13 +112,29 @@ Reglas:
 - Enlace: `{AMIVA_APP_BASE_URL}/invite/<token>`.
 - Actividad `MEMBER_INVITED` en cada envío (también al reenviar), con `memberName` y `role`.
 
+### Invitaciones recibidas
+
+El token del email solo sirve para localizar la invitación; aceptar y rechazar van por id. Invitación inexistente, de otro usuario, ya respondida o token reemplazado por un reenvío: 404 con el mismo mensaje.
+
+- `GET /api/me/invitations`: mis pendientes, más recientes primero (`id`, `organizationId`, `organizationName`, `role`, `invitedByName`, `createdAt`, `updatedAt`).
+- `POST /api/invitations/resolve`: `{token}` del enlace. La misma invitación (200; 404). El token va en el body, nunca en la URL.
+- `POST /api/invitations/{id}/accept`: pasa a ser miembro con el rol de la invitación y devuelve la organización como `GET /api/orgs/{orgId}` (200; 403 con `reason: EMAIL_NOT_VERIFIED`; 404; 409 si ya es miembro, sin tocar la invitación).
+- `POST /api/invitations/{id}/decline`: 204; 403 con `reason: EMAIL_NOT_VERIFIED`; 404.
+
+Reglas:
+
+- La lista y `resolve` funcionan sin email verificado; responder no.
+- La fila se conserva: `status` pasa a `ACCEPTED` o `DECLINED` y se guarda `responded_at`. Se puede volver a invitar a quien rechazó (fila nueva).
+- La invitación se carga con `SELECT … FOR UPDATE`: de dos respuestas simultáneas, la segunda da 404. Si el alta choca con la PK de `membership`, 409.
+- Actividad `MEMBER_JOINED` al aceptar (autor y target: el nuevo miembro; `role`). Rechazar no registra nada.
+
 ## Actividad
 
 Registro append-only por organización (`activity`): autor (`actor_id` + copia de `actor_name`, `anonymous` si es superadmin), `action`, `target_type` + `target_id`, `details` (JSONB con nombres copiados y valores) y `occurred_at`. El texto lo monta el front a partir de `action` + `details`.
 
 Los casos de uso publican un evento de dominio (`OrganizationCreated`, `MemberRoleChanged`…) con `ApplicationEventPublisher`; `ActivityRecorder` lo escucha con `@EventListener` dentro de la misma transacción (`MANDATORY`): si falla el registro, falla la acción. Acción nueva = evento + valor en `ActivityAction` + método en `ActivityRecorder` + test.
 
-Acciones actuales: `ORG_CREATED` (registro), `MEMBER_ROLE_CHANGED` (solo si el rol cambia de verdad), `MEMBER_INVITED` (invitación enviada o reenviada).
+Acciones actuales: `ORG_CREATED` (registro), `MEMBER_ROLE_CHANGED` (solo si el rol cambia de verdad), `MEMBER_INVITED` (invitación enviada o reenviada), `MEMBER_JOINED` (invitación aceptada).
 
 ## Verificación del email
 

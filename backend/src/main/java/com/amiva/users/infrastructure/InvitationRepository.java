@@ -7,7 +7,9 @@ import java.util.UUID;
 
 import com.amiva.users.domain.Invitation;
 import com.amiva.users.domain.InvitationStatus;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -27,4 +29,14 @@ public interface InvitationRepository extends JpaRepository<Invitation, UUID> {
             """)
     List<UUID> findPendingInviteeIds(@Param("orgId") UUID organizationId,
             @Param("userIds") Collection<UUID> userIds);
+
+    // Invitaciones recibidas por un usuario, más recientes primero
+    List<Invitation> findByInviteeUserIdAndStatusOrderByUpdatedAtDesc(UUID inviteeUserId, InvitationStatus status);
+
+    Optional<Invitation> findByTokenHash(String tokenHash);
+
+    // SELECT ... FOR UPDATE: dos respuestas simultáneas a la misma invitación se ejecutan una tras otra
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select i from Invitation i where i.id = :id")
+    Optional<Invitation> findByIdForUpdate(@Param("id") UUID id);
 }

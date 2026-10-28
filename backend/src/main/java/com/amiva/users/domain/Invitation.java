@@ -48,6 +48,10 @@ public class Invitation {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
+    // NULL mientras está pendiente
+    @Column(name = "responded_at")
+    private Instant respondedAt;
+
     protected Invitation() {
     }
 
@@ -74,6 +78,28 @@ public class Invitation {
         this.role = role;
         this.tokenHash = tokenHash;
         this.updatedAt = now;
+    }
+
+    public void accept(Instant now) {
+        respond(InvitationStatus.ACCEPTED, now);
+    }
+
+    public void decline(Instant now) {
+        respond(InvitationStatus.DECLINED, now);
+    }
+
+    // Solo se responde una vez y solo a una pendiente
+    private void respond(InvitationStatus response, Instant now) {
+        if (!isPending()) {
+            throw new InvitationNotPendingException();
+        }
+        this.status = response;
+        this.respondedAt = now;
+        this.updatedAt = now;
+    }
+
+    public boolean isPending() {
+        return status == InvitationStatus.PENDING;
     }
 
     private static void requireAssignable(OrgRole role) {
@@ -116,5 +142,9 @@ public class Invitation {
 
     public Instant getUpdatedAt() {
         return updatedAt;
+    }
+
+    public Instant getRespondedAt() {
+        return respondedAt;
     }
 }

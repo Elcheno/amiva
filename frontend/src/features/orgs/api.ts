@@ -105,3 +105,56 @@ export function useInviteMember(orgId: string) {
       ]),
   })
 }
+
+// Invitación pendiente recibida por el usuario de la sesión. invitedByName: null si quien invitó ya no existe
+export interface ReceivedInvitation {
+  id: string
+  organizationId: string
+  organizationName: string
+  role: InviteRole
+  invitedByName: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+// Mis invitaciones pendientes, más recientes primero
+export const myInvitationsQueryOptions = queryOptions({
+  queryKey: ['me', 'invitations'],
+  queryFn: () => api<ReceivedInvitation[]>('/me/invitations'),
+})
+
+// Token del enlace del email (va en el body, nunca en la URL de la API).
+// 404 si no es para mi cuenta, ya no está pendiente o el token se reemplazó con un reenvío
+export function invitationByTokenQueryOptions(token: string) {
+  return queryOptions({
+    queryKey: ['invitations', 'resolve', token],
+    queryFn: () =>
+      api<ReceivedInvitation>('/invitations/resolve', { method: 'POST', body: { token } }),
+  })
+}
+
+// Devuelve la organización a la que se entra. 403 con reason EMAIL_NOT_VERIFIED,
+// 404 no disponible, 409 ya es miembro
+export function useAcceptInvitation() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (invitationId: string) =>
+      api<OrgSummary>(`/invitations/${invitationId}/accept`, { method: 'POST' }),
+    onSuccess: () =>
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: myInvitationsQueryOptions.queryKey }),
+        queryClient.invalidateQueries({ queryKey: orgsQueryOptions.queryKey }),
+      ]),
+  })
+}
+
+// 403 con reason EMAIL_NOT_VERIFIED, 404 no disponible
+export function useDeclineInvitation() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (invitationId: string) =>
+      api<void>(`/invitations/${invitationId}/decline`, { method: 'POST' }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: myInvitationsQueryOptions.queryKey }),
+  })
+}

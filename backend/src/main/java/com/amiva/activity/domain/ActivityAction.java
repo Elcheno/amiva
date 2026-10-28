@@ -4,5 +4,6 @@ package com.amiva.activity.domain;
 public enum ActivityAction {
     ORG_CREATED,
     MEMBER_ROLE_CHANGED,
-    MEMBER_INVITED
+    MEMBER_INVITED,
+    MEMBER_JOINED
 }

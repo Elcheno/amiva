@@ -14,6 +14,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as VerifyEmailRouteImport } from './routes/verify-email'
 import { Route as AuthIndexRouteImport } from './routes/_auth/index'
+import { Route as AuthInviteTokenRouteImport } from './routes/_auth/invite.$token'
 import { Route as AuthOrgsIndexRouteImport } from './routes/_auth/orgs/index'
 import { Route as AuthOrgsOrgIdRouteImport } from './routes/_auth/orgs/$orgId'
 
@@ -41,6 +42,11 @@ const AuthIndexRoute = AuthIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthRoute,
 } as any)
+const AuthInviteTokenRoute = AuthInviteTokenRouteImport.update({
+  id: '/invite/$token',
+  path: '/invite/$token',
+  getParentRoute: () => AuthRoute,
+} as any)
 const AuthOrgsIndexRoute = AuthOrgsIndexRouteImport.update({
   id: '/orgs/',
   path: '/orgs/',
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/invite/$token': typeof AuthInviteTokenRoute
   '/orgs/$orgId': typeof AuthOrgsOrgIdRoute
   '/orgs/': typeof AuthOrgsIndexRoute
 }
@@ -65,6 +72,7 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/verify-email': typeof VerifyEmailRoute
   '/': typeof AuthIndexRoute
+  '/invite/$token': typeof AuthInviteTokenRoute
   '/orgs/$orgId': typeof AuthOrgsOrgIdRoute
   '/orgs': typeof AuthOrgsIndexRoute
 }
@@ -75,15 +83,29 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/verify-email': typeof VerifyEmailRoute
   '/_auth/': typeof AuthIndexRoute
+  '/_auth/invite/$token': typeof AuthInviteTokenRoute
   '/_auth/orgs/$orgId': typeof AuthOrgsOrgIdRoute
   '/_auth/orgs/': typeof AuthOrgsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/login' | '/register' | '/verify-email' | '/orgs/$orgId' | '/orgs/'
+    | '/'
+    | '/login'
+    | '/register'
+    | '/verify-email'
+    | '/invite/$token'
+    | '/orgs/$orgId'
+    | '/orgs/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/register' | '/verify-email' | '/' | '/orgs/$orgId' | '/orgs'
+  to:
+    | '/login'
+    | '/register'
+    | '/verify-email'
+    | '/'
+    | '/invite/$token'
+    | '/orgs/$orgId'
+    | '/orgs'
   id:
     | '__root__'
     | '/_auth'
@@ -91,6 +113,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/verify-email'
     | '/_auth/'
+    | '/_auth/invite/$token'
     | '/_auth/orgs/$orgId'
     | '/_auth/orgs/'
   fileRoutesById: FileRoutesById
@@ -139,6 +162,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthIndexRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_auth/invite/$token': {
+      id: '/_auth/invite/$token'
+      path: '/invite/$token'
+      fullPath: '/invite/$token'
+      preLoaderRoute: typeof AuthInviteTokenRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/_auth/orgs/': {
       id: '/_auth/orgs/'
       path: '/orgs'
@@ -158,12 +188,14 @@ declare module '@tanstack/react-router' {
 
 interface AuthRouteChildren {
   AuthIndexRoute: typeof AuthIndexRoute
+  AuthInviteTokenRoute: typeof AuthInviteTokenRoute
   AuthOrgsOrgIdRoute: typeof AuthOrgsOrgIdRoute
   AuthOrgsIndexRoute: typeof AuthOrgsIndexRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthIndexRoute: AuthIndexRoute,
+  AuthInviteTokenRoute: AuthInviteTokenRoute,
   AuthOrgsOrgIdRoute: AuthOrgsOrgIdRoute,
   AuthOrgsIndexRoute: AuthOrgsIndexRoute,
 }
