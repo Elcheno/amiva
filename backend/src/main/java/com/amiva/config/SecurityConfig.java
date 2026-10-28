@@ -21,7 +21,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 @Configuration
 public class SecurityConfig {
 
-    // Públicos: health, CSRF, registro y login. El resto exige sesión iniciada
+    // Públicos: health, CSRF, registro, login y verificación del email. El resto exige sesión iniciada
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http, SecurityContextRepository securityContextRepository,
             @Qualifier("handlerExceptionResolver") HandlerExceptionResolver exceptionResolver) throws Exception {
@@ -31,6 +31,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/auth/csrf").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/verify-email").permitAll()
                         .anyRequest().authenticated())
                 // SPA con sesión en cookie: token en cookie XSRF-TOKEN, la SPA lo reenvía en X-XSRF-TOKEN
                 .csrf(csrf -> csrf.spa())

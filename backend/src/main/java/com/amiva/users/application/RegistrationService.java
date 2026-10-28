@@ -6,6 +6,7 @@ import com.amiva.users.domain.AppUser;
 import com.amiva.users.domain.Membership;
 import com.amiva.users.domain.Organization;
 import com.amiva.users.domain.OrganizationCreated;
+import com.amiva.users.domain.UserRegistered;
 import com.amiva.users.infrastructure.AppUserRepository;
 import com.amiva.users.infrastructure.MembershipRepository;
 import com.amiva.users.infrastructure.OrganizationRepository;
@@ -61,6 +62,8 @@ public class RegistrationService {
         Organization org = organizations.save(Organization.ownedBy(user, resolveTimezone(command.timezone())));
         memberships.save(Membership.owner(org));
         events.publishEvent(new OrganizationCreated(org.getId(), org.getName(), user.asActor()));
+        // El email de verificación sale tras el commit (VerificationEmailListener)
+        events.publishEvent(new UserRegistered(user.getId(), user.getEmail(), user.getDisplayName()));
 
         return new RegistrationResult(user.getId(), user.getEmail(), user.getDisplayName(), org.getId(), org.getName());
     }

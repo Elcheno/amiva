@@ -35,6 +35,14 @@ services:
       retries: 10
       start_period: 10s
 
+  # SMTP de desarrollo: captura los emails sin enviarlos. Bandeja en http://localhost:8025
+  mailpit:
+    image: axllent/mailpit
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:1025:1025"
+      - "127.0.0.1:8025:8025"
+
 volumes:
   pgdata-core:
   pgdata-data:

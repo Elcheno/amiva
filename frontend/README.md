@@ -29,8 +29,9 @@ Usa `bun run test`, no `bun test` (este último lanza el runner de bun, no Vites
 
 ```
 src/
-  routes/       una ruta por fichero (routeTree.gen.ts se genera solo). /login y /register son
-                públicas; las de _auth/ exigen sesión (si no, /login?redirect=<ruta>).
+  routes/       una ruta por fichero (routeTree.gen.ts se genera solo). /login, /register y
+                /verify-email?token=… (enlace del email) son públicas; las de _auth/ exigen sesión
+                (si no, /login?redirect=<ruta>) y muestran el aviso de verificar el email.
                 La org activa va en la URL (/orgs/$orgId): / lleva a la última usada
                 (localStorage amiva.lastOrgId) o a la propia; /orgs lista todas
   features/     lógica por dominio (auth, orgs, forms, answers, widgets…)

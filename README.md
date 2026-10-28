@@ -37,6 +37,8 @@ cd backend && ./mvnw spring-boot:run
 
 Comprobación: http://localhost:8080/actuator/health
 
+Emails en local: Mailpit (incluido en el compose) los captura sin enviarlos. Bandeja en http://localhost:8025.
+
 ## Configuración
 
 Todas las variables se definen en el `.env` de la raíz (ver `.env.example`). El `.env` nunca se sube al repositorio.

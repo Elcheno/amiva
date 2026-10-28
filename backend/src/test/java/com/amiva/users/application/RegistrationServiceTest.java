@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -16,6 +17,7 @@ import com.amiva.users.domain.Membership;
 import com.amiva.users.domain.OrgRole;
 import com.amiva.users.domain.Organization;
 import com.amiva.users.domain.OrganizationCreated;
+import com.amiva.users.domain.UserRegistered;
 import com.amiva.users.infrastructure.AppUserRepository;
 import com.amiva.users.infrastructure.MembershipRepository;
 import com.amiva.users.infrastructure.OrganizationRepository;
@@ -83,11 +85,11 @@ class RegistrationServiceTest {
         assertThat(membership.getValue().getUserId()).isEqualTo(userId);
         assertThat(membership.getValue().getRole()).isEqualTo(OrgRole.OWNER);
 
-        ArgumentCaptor<OrganizationCreated> event = ArgumentCaptor.forClass(OrganizationCreated.class);
-        verify(events).publishEvent(event.capture());
-        assertThat(event.getValue().organizationId()).isEqualTo(orgId);
-        assertThat(event.getValue().organizationName()).isEqualTo("Org de Ana");
-        assertThat(event.getValue().actor()).isEqualTo(new Actor(userId, "Ana", false));
+        ArgumentCaptor<Object> published = ArgumentCaptor.forClass(Object.class);
+        verify(events, times(2)).publishEvent(published.capture());
+        assertThat(published.getAllValues()).containsExactly(
+                new OrganizationCreated(orgId, "Org de Ana", new Actor(userId, "Ana", false)),
+                new UserRegistered(userId, "ana@example.com", "Ana"));
 
         assertThat(result).isEqualTo(new RegistrationResult(userId, "ana@example.com", "Ana", orgId, "Org de Ana"));
     }

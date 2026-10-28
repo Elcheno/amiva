@@ -60,6 +60,10 @@ public class AppUser {
         return user;
     }
 
+    public void verifyEmail() {
+        emailVerified = true;
+    }
+
     @PrePersist
     void onCreate() {
         createdAt = Instant.now();
