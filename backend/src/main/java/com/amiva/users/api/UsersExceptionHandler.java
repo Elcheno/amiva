@@ -1,12 +1,15 @@
 package com.amiva.users.api;
 
+import com.amiva.users.application.AlreadyMemberException;
 import com.amiva.users.application.EmailAlreadyRegisteredException;
 import com.amiva.users.application.EmailAlreadyVerifiedException;
 import com.amiva.users.application.InvalidCredentialsException;
 import com.amiva.users.application.InvalidVerificationTokenException;
+import com.amiva.users.application.InvitationEmailException;
 import com.amiva.users.application.MemberNotFoundException;
 import com.amiva.users.application.OrganizationNotFoundException;
 import com.amiva.users.application.PermissionDeniedException;
+import com.amiva.users.application.UserNotFoundException;
 import com.amiva.users.application.VerificationResendTooSoonException;
 import com.amiva.users.domain.OwnerRoleImmutableException;
 import com.amiva.users.domain.RoleNotAssignableException;
@@ -96,5 +99,27 @@ class UsersExceptionHandler {
         return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
                 .header(HttpHeaders.RETRY_AFTER, String.valueOf(seconds))
                 .body(problem);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    ProblemDetail userNotFound(UserNotFoundException e) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+        problem.setTitle("Usuario no encontrado");
+        return problem;
+    }
+
+    @ExceptionHandler(AlreadyMemberException.class)
+    ProblemDetail alreadyMember(AlreadyMemberException e) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
+        problem.setTitle("Ya es miembro");
+        return problem;
+    }
+
+    // SMTP caído o lento: no se ha guardado nada y se puede reintentar
+    @ExceptionHandler(InvitationEmailException.class)
+    ProblemDetail invitationEmail(InvitationEmailException e) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.SERVICE_UNAVAILABLE, e.getMessage());
+        problem.setTitle("Email no enviado");
+        return problem;
     }
 }

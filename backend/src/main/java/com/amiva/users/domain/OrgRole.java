@@ -26,11 +26,13 @@ public enum OrgRole {
     }
 
     // Matriz de permisos: el único sitio donde se decide qué puede hacer cada rol.
-    // Solo el OWNER da y quita ADMIN; así ningún admin puede quitárselo a otro
+    // Solo el OWNER da y quita ADMIN; así ningún admin puede quitárselo a otro.
+    // Invitar con rol ADMIN exige además MANAGE_ROLES
     public boolean has(OrgPermission permission) {
         return switch (permission) {
             case VIEW_MEMBERS -> true;
             case MANAGE_ROLES -> this == OWNER;
+            case INVITE_MEMBERS -> this == OWNER || this == ADMIN;
         };
     }
 }

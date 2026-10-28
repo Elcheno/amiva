@@ -19,4 +19,11 @@ class OrgRoleTest {
         assertThat(OrgRole.ADMIN.has(OrgPermission.MANAGE_ROLES)).isFalse();
         assertThat(OrgRole.MEMBER.has(OrgPermission.MANAGE_ROLES)).isFalse();
     }
+
+    @Test
+    void ownerYAdminInvitan() {
+        assertThat(OrgRole.OWNER.has(OrgPermission.INVITE_MEMBERS)).isTrue();
+        assertThat(OrgRole.ADMIN.has(OrgPermission.INVITE_MEMBERS)).isTrue();
+        assertThat(OrgRole.MEMBER.has(OrgPermission.INVITE_MEMBERS)).isFalse();
+    }
 }

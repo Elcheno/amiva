@@ -11,6 +11,7 @@ import com.amiva.activity.domain.ActivityAction;
 import com.amiva.activity.domain.ActivityTargetType;
 import com.amiva.activity.infrastructure.ActivityRepository;
 import com.amiva.shared.domain.Actor;
+import com.amiva.users.domain.MemberInvited;
 import com.amiva.users.domain.MemberRoleChanged;
 import com.amiva.users.domain.OrgRole;
 import com.amiva.users.domain.OrganizationCreated;
@@ -64,6 +65,20 @@ class ActivityRecorderTest {
         assertThat(activity.getTargetId()).isEqualTo(carlosId);
         assertThat(activity.getDetails())
                 .isEqualTo(Map.of("memberName", "carlos", "from", "MEMBER", "to", "ADMIN"));
+    }
+
+    @Test
+    void miembroInvitadoGuardaNombreCopiadoYRol() {
+        UUID beaId = UUID.randomUUID();
+
+        recorder.on(new MemberInvited(orgId, ana, beaId, "Bea", OrgRole.MEMBER));
+
+        Activity activity = saved();
+        assertThat(activity.getAction()).isEqualTo(ActivityAction.MEMBER_INVITED);
+        assertThat(activity.getActorId()).isEqualTo(ana.userId());
+        assertThat(activity.getTargetType()).isEqualTo(ActivityTargetType.MEMBER);
+        assertThat(activity.getTargetId()).isEqualTo(beaId);
+        assertThat(activity.getDetails()).isEqualTo(Map.of("memberName", "Bea", "role", "MEMBER"));
     }
 
     // La identidad se guarda; ocultarla al mostrar es cosa de la vista de actividad

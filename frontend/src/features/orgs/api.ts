@@ -1,4 +1,4 @@
-import { queryOptions } from '@tanstack/react-query'
+import { queryOptions, useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '@/lib/api'
 
 export type OrgRole = 'OWNER' | 'ADMIN' | 'MEMBER'
@@ -20,6 +20,37 @@ export interface Member {
   createdAt: string
 }
 
+// Rol con el que se puede invitar (OWNER no se asigna)
+export type InviteRole = Exclude<OrgRole, 'OWNER'>
+
+// Invitación pendiente. invitedByName: null si quien invitó ya no existe
+export interface Invitation {
+  invitationId: string
+  userId: string
+  username: string
+  displayName: string
+  role: InviteRole
+  invitedByName: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+// Resultado de la búsqueda para invitar (sin email)
+export interface InvitableUser {
+  userId: string
+  username: string
+  displayName: string
+  pendingInvitation: boolean
+}
+
+export interface InviteRequest {
+  userId: string
+  role: InviteRole
+}
+
+// Mínimo de caracteres para buscar (con menos, el backend devuelve [])
+export const INVITE_SEARCH_MIN_LENGTH = 3
+
 // La propia primero, luego por nombre (lo ordena el backend)
 export const orgsQueryOptions = queryOptions({
   queryKey: ['orgs'],
@@ -38,5 +69,39 @@ export function membersQueryOptions(orgId: string) {
   return queryOptions({
     queryKey: ['orgs', orgId, 'members'],
     queryFn: () => api<Member[]>(`/orgs/${orgId}/members`),
+  })
+}
+
+// Pendientes, más recientes primero. Solo OWNER y ADMIN (403 al resto)
+export function invitationsQueryOptions(orgId: string) {
+  return queryOptions({
+    queryKey: ['orgs', orgId, 'invitations'],
+    queryFn: () => api<Invitation[]>(`/orgs/${orgId}/invitations`),
+  })
+}
+
+// Solo consulta con q de al menos INVITE_SEARCH_MIN_LENGTH caracteres
+export function invitableUsersQueryOptions(orgId: string, q: string) {
+  const query = q.trim()
+  return queryOptions({
+    queryKey: ['orgs', orgId, 'invitable-users', query],
+    queryFn: () =>
+      api<InvitableUser[]>(`/orgs/${orgId}/invitable-users?q=${encodeURIComponent(query)}`),
+    // Por caracteres, no unidades UTF-16, igual que el backend
+    enabled: [...query].length >= INVITE_SEARCH_MIN_LENGTH,
+  })
+}
+
+// 403 sin permiso (o ADMIN invitando como Admin), 409 ya es miembro, 503 no se pudo enviar el email
+export function useInviteMember(orgId: string) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (body: InviteRequest) =>
+      api<Invitation>(`/orgs/${orgId}/invitations`, { method: 'POST', body }),
+    onSuccess: () =>
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['orgs', orgId, 'invitations'] }),
+        queryClient.invalidateQueries({ queryKey: ['orgs', orgId, 'invitable-users'] }),
+      ]),
   })
 }
