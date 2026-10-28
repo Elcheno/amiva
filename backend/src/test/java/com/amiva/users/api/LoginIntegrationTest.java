@@ -64,6 +64,7 @@ class LoginIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userId").value(registered.userId().toString()))
                 .andExpect(jsonPath("$.email").value(email))
+                .andExpect(jsonPath("$.username").value(registered.username()))
                 .andExpect(jsonPath("$.displayName").value("Ana"))
                 .andExpect(jsonPath("$.orgId").value(registered.orgId().toString()))
                 .andExpect(jsonPath("$.orgName").value("Org de Ana"))
@@ -74,6 +75,7 @@ class LoginIntegrationTest {
         mvc.perform(get("/api/auth/me").session(session))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userId").value(registered.userId().toString()))
+                .andExpect(jsonPath("$.username").value(registered.username()))
                 .andExpect(jsonPath("$.orgName").value("Org de Ana"));
     }
 

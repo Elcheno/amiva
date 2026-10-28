@@ -18,7 +18,7 @@ function NoOrgs() {
   const { me } = Route.useRouteContext()
   return (
     <>
-      <OrgHeader userName={me.displayName} />
+      <OrgHeader userName={me.displayName} username={me.username} />
       <main className="p-4">
         <p className="text-muted-foreground">
           <Trans>No perteneces a ninguna organización</Trans>

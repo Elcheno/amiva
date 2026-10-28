@@ -8,11 +8,14 @@ import static org.mockito.Mockito.doReturn;
 import java.util.UUID;
 
 import com.amiva.TestCleanup;
+import com.amiva.users.domain.Username;
 import com.amiva.users.infrastructure.AppUserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
@@ -30,10 +33,11 @@ class RegistrationServiceIntegrationTest {
     AppUserRepository users;
 
     private final String email = "it-" + UUID.randomUUID() + "@example.com";
+    private final String otherEmail = "it-" + UUID.randomUUID() + "@example.com";
 
     @AfterEach
     void cleanUp() {
-        TestCleanup.deleteUsers(jdbc, email);
+        TestCleanup.deleteUsers(jdbc, email, otherEmail);
     }
 
     @Test
@@ -80,5 +84,32 @@ class RegistrationServiceIntegrationTest {
 
         assertThat(jdbc.queryForObject("SELECT count(*) FROM organization o JOIN app_user u ON u.id = o.owner_id"
                 + " WHERE lower(u.email) = lower(?)", Integer.class, email)).isEqualTo(1);
+    }
+
+    @Test
+    void guardaUnUsernameGeneradoValido() {
+        RegistrationResult result = service.register(new RegisterCommand(email, "secreta123", "Ana", null));
+
+        String stored = jdbc.queryForObject("SELECT username FROM app_user WHERE id = ?", String.class,
+                result.userId());
+        assertThat(stored).isEqualTo(result.username());
+        assertThat(Username.isValid(stored)).as(stored).isTrue();
+    }
+
+    @Test
+    void usernameUnicoSinDistinguirMayusculas() {
+        RegistrationResult ana = service.register(new RegisterCommand(email, "secreta123", "Ana", null));
+        RegistrationResult bea = service.register(new RegisterCommand(otherEmail, "secreta123", "Bea", null));
+
+        assertThatThrownBy(() -> jdbc.update("UPDATE app_user SET username = ? WHERE id = ?", ana.username(),
+                bea.userId()))
+                .isInstanceOf(DuplicateKeyException.class)
+                .hasMessageContaining("uq_app_user_username_lower");
+        // En mayúsculas tampoco entra: ya lo para el CHECK del formato antes que el índice
+        assertThatThrownBy(() -> jdbc.update("UPDATE app_user SET username = ? WHERE id = ?",
+                ana.username().toUpperCase(), bea.userId()))
+                .isInstanceOf(DataIntegrityViolationException.class);
+        assertThat(jdbc.queryForObject("SELECT indexdef FROM pg_indexes WHERE indexname = ?", String.class,
+                "uq_app_user_username_lower")).contains("UNIQUE").contains("lower((username)");
     }
 }

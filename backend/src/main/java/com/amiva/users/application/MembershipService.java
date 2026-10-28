@@ -80,7 +80,7 @@ public class MembershipService {
     }
 
     private static OrganizationMember toMember(Membership membership, AppUser user) {
-        return new OrganizationMember(user.getId(), user.getDisplayName(), user.getEmail(), membership.getRole(),
+        return new OrganizationMember(user.getId(), user.getUsername(), user.getDisplayName(), user.getEmail(), membership.getRole(),
                 membership.getCreatedAt());
     }
 }

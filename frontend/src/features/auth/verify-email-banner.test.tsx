@@ -7,6 +7,7 @@ import { VerifyEmailBanner } from './verify-email-banner'
 const USER: CurrentUser = {
   userId: 'u1',
   email: 'ana@example.com',
+  username: 'nutria-dormilona-42',
   displayName: 'Ana',
   orgId: 'o1',
   orgName: 'Org de Ana',

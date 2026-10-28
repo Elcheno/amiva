@@ -5,5 +5,5 @@ import java.util.UUID;
 
 import com.amiva.users.domain.OrgRole;
 
-public record OrganizationMember(UUID userId, String displayName, String email, OrgRole role, Instant createdAt) {
+public record OrganizationMember(UUID userId, String username, String displayName, String email, OrgRole role, Instant createdAt) {
 }

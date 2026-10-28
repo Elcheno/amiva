@@ -86,7 +86,7 @@ class OrganizationServiceTest {
     }
 
     private static AppUser user(String name) {
-        return withId(AppUser.withPassword(name + "@example.com", "hash", name), UUID.randomUUID());
+        return withId(AppUser.withPassword(name + "@example.com", "hash", name.toLowerCase(), name), UUID.randomUUID());
     }
 
     private static <T> T withId(T entity, UUID id) {
