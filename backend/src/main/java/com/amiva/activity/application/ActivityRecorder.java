@@ -6,6 +6,7 @@ import com.amiva.activity.domain.Activity;
 import com.amiva.activity.domain.ActivityAction;
 import com.amiva.activity.domain.ActivityTargetType;
 import com.amiva.activity.infrastructure.ActivityRepository;
+import com.amiva.users.domain.MemberInvited;
 import com.amiva.users.domain.MemberRoleChanged;
 import com.amiva.users.domain.OrganizationCreated;
 import org.springframework.context.event.EventListener;
@@ -37,5 +38,13 @@ public class ActivityRecorder {
         activities.save(Activity.of(event.organizationId(), event.actor(), ActivityAction.MEMBER_ROLE_CHANGED,
                 ActivityTargetType.MEMBER, event.memberUserId(),
                 Map.of("memberName", event.memberName(), "from", event.from().name(), "to", event.to().name())));
+    }
+
+    // También al reenviar una invitación pendiente. target: el usuario invitado (aún no es miembro)
+    @EventListener
+    public void on(MemberInvited event) {
+        activities.save(Activity.of(event.organizationId(), event.actor(), ActivityAction.MEMBER_INVITED,
+                ActivityTargetType.MEMBER, event.inviteeUserId(),
+                Map.of("memberName", event.inviteeName(), "role", event.role().name())));
     }
 }

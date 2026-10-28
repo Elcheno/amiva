@@ -96,13 +96,29 @@ Permisos: cada caso de uso llama a `OrgPermissionService.require(actor, org, Org
 - `GET /api/orgs/{orgId}/members`: miembros (`userId`, `displayName`, `email`, `role`, `createdAt`), OWNER primero y luego por nombre. Cualquier miembro.
 - `PATCH /api/orgs/{orgId}/members/{userId}`: `{"role": "ADMIN" | "MEMBER"}`, devuelve el miembro (200; 400 rol no válido u OWNER; 403 si no eres el OWNER; 404 si no es miembro; 409 si es el OWNER). Solo el OWNER.
 
+## Invitaciones
+
+Solo a usuarios ya registrados. Invitan el OWNER y los ADMIN (`INVITE_MEMBERS`); invitar con rol `ADMIN` exige además `MANAGE_ROLES` (solo el OWNER). Mismos 404/403 que el resto de la organización.
+
+- `GET /api/orgs/{orgId}/invitable-users?q=…`: usuarios que aún no son miembros cuyo `username` empieza por `q` o cuyo nombre contiene `q` (sin distinguir mayúsculas; `%`, `_` y `\` se buscan como texto). `q` con menos de 3 caracteres: `[]`. Máximo 10, por nombre y luego username. Devuelve `userId`, `username`, `displayName` y `pendingInvitation`; nunca el email. Sin índice por ahora.
+- `POST /api/orgs/{orgId}/invitations`: `{userId, role: "ADMIN" | "MEMBER"}`. 201 con la invitación (`invitationId`, `userId`, `username`, `displayName`, `role`, `invitedByName`, `createdAt`, `updatedAt`); 400 rol no válido u OWNER o sin `userId`; 403 con `permission`; 404 si el usuario no existe; 409 si ya es miembro (también uno mismo); 503 si no se pudo enviar el email.
+- `GET /api/orgs/{orgId}/invitations`: pendientes, de más reciente a más antigua (`updatedAt`).
+
+Reglas:
+
+- Token como el de verificación (32 bytes base64url, en BD solo el SHA-256 en hex). Las pendientes no caducan.
+- Una sola pendiente por usuario y organización. Volver a invitar reutiliza la fila: token, rol e invitador nuevos, `updated_at` actualizado y otro email. El enlace anterior deja de valer.
+- El email se envía dentro de la transacción (no `AFTER_COMMIT`, a diferencia del de verificación): si falla el SMTP, no queda invitación ni actividad y la API responde 503.
+- Enlace: `{AMIVA_APP_BASE_URL}/invite/<token>`.
+- Actividad `MEMBER_INVITED` en cada envío (también al reenviar), con `memberName` y `role`.
+
 ## Actividad
 
 Registro append-only por organización (`activity`): autor (`actor_id` + copia de `actor_name`, `anonymous` si es superadmin), `action`, `target_type` + `target_id`, `details` (JSONB con nombres copiados y valores) y `occurred_at`. El texto lo monta el front a partir de `action` + `details`.
 
 Los casos de uso publican un evento de dominio (`OrganizationCreated`, `MemberRoleChanged`…) con `ApplicationEventPublisher`; `ActivityRecorder` lo escucha con `@EventListener` dentro de la misma transacción (`MANDATORY`): si falla el registro, falla la acción. Acción nueva = evento + valor en `ActivityAction` + método en `ActivityRecorder` + test.
 
-Acciones actuales: `ORG_CREATED` (registro), `MEMBER_ROLE_CHANGED` (solo si el rol cambia de verdad).
+Acciones actuales: `ORG_CREATED` (registro), `MEMBER_ROLE_CHANGED` (solo si el rol cambia de verdad), `MEMBER_INVITED` (invitación enviada o reenviada).
 
 ## Verificación del email
 

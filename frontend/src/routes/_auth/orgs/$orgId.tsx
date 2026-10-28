@@ -8,8 +8,11 @@ import {
 } from '@tanstack/react-router'
 import { ApiError } from '@/lib/api'
 import { orgQueryOptions, orgsQueryOptions } from '@/features/orgs/api'
+import { InviteMember } from '@/features/orgs/invite-member'
 import { MembersList } from '@/features/orgs/members-list'
 import { OrgHeader } from '@/features/orgs/org-header'
+import { PendingInvitations } from '@/features/orgs/pending-invitations'
+import { canInvite } from '@/features/orgs/permissions'
 import { useRoleLabel } from '@/features/orgs/role-label'
 import { saveLastOrgId } from '@/features/orgs/select-org'
 
@@ -45,11 +48,22 @@ function OrgPage() {
           </p>
         </div>
         <section aria-labelledby="members" className="flex flex-col gap-3">
-          <h2 id="members" className="text-lg font-semibold">
-            <Trans>Miembros</Trans>
-          </h2>
+          <div className="flex items-center justify-between gap-3">
+            <h2 id="members" className="text-lg font-semibold">
+              <Trans>Miembros</Trans>
+            </h2>
+            <InviteMember orgId={orgId} myRole={org.role} />
+          </div>
           <MembersList orgId={orgId} />
         </section>
+        {canInvite(org.role) && (
+          <section aria-labelledby="pending-invitations" className="flex flex-col gap-3">
+            <h2 id="pending-invitations" className="text-lg font-semibold">
+              <Trans>Invitaciones pendientes</Trans>
+            </h2>
+            <PendingInvitations orgId={orgId} />
+          </section>
+        )}
       </main>
     </>
   )

@@ -23,10 +23,28 @@ msgstr "Admin"
 msgid "Aún no participas en ninguna organización"
 msgstr "Aún no participas en ninguna organización"
 
+#: src/features/orgs/invite-member.tsx:44
+msgid "Busca a un usuario registrado por su nombre o su @username."
+msgstr "Busca a un usuario registrado por su nombre o su @username."
+
+#: src/features/orgs/invite-member.tsx:197
+msgid "Buscando…"
+msgstr "Buscando…"
+
+#: src/features/orgs/invite-member.tsx:104
+msgid "Buscar usuario"
+msgstr "Buscar usuario"
+
 #: src/features/orgs/members-list.tsx:13
 #: src/features/orgs/orgs-overview.tsx:16
+#: src/features/orgs/pending-invitations.tsx:15
 msgid "Cargando…"
 msgstr "Cargando…"
+
+#: src/components/ui/dialog.tsx:65
+#: src/components/ui/dialog.tsx:100
+msgid "Cerrar"
+msgstr "Cerrar"
 
 #: src/features/orgs/org-header.tsx:38
 msgid "Cerrar sesión"
@@ -94,6 +112,22 @@ msgstr "Entra con tu email y tu contraseña."
 msgid "Entrando…"
 msgstr "Entrando…"
 
+#: src/features/orgs/pending-invitations.tsx:48
+msgid "Enviada"
+msgstr "Enviada"
+
+#: src/features/orgs/invite-member.tsx:151
+msgid "Enviando…"
+msgstr "Enviando…"
+
+#: src/features/orgs/invite-member.tsx:151
+msgid "Enviar invitación"
+msgstr "Enviar invitación"
+
+#: src/features/orgs/invite-member.tsx:190
+msgid "Escribe al menos {min} caracteres"
+msgstr "Escribe al menos {min} caracteres"
+
 #: src/features/auth/login-validation.ts:19
 msgid "Escribe tu contraseña"
 msgstr "Escribe tu contraseña"
@@ -110,6 +144,10 @@ msgstr "Escribe tu nombre"
 #: src/features/auth/register-form.tsx:20
 msgid "Ese email ya está registrado"
 msgstr "Ese email ya está registrado"
+
+#: src/features/orgs/invite-member.tsx:246
+msgid "Ese usuario ya es miembro de la organización"
+msgstr "Ese usuario ya es miembro de la organización"
 
 #: src/features/auth/verify-email-banner.tsx:40
 msgid "Espera un minuto antes de pedir otro"
@@ -141,6 +179,34 @@ msgstr "Iniciar sesión"
 msgid "Inténtalo de nuevo más tarde."
 msgstr "Inténtalo de nuevo más tarde."
 
+#: src/features/orgs/invite-member.tsx:160
+msgid "Invitación enviada a {invitedName}"
+msgstr "Invitación enviada a {invitedName}"
+
+#: src/features/orgs/invite-member.tsx:229
+msgid "Invitación pendiente"
+msgstr "Invitación pendiente"
+
+#: src/routes/_auth/orgs/$orgId.tsx:62
+msgid "Invitaciones pendientes"
+msgstr "Invitaciones pendientes"
+
+#: src/features/orgs/pending-invitations.tsx:45
+msgid "Invitado por"
+msgstr "Invitado por"
+
+#: src/features/orgs/invite-member.tsx:36
+msgid "Invitar"
+msgstr "Invitar"
+
+#: src/features/orgs/invite-member.tsx:128
+msgid "Invitar a <0>{selectedName}</0>"
+msgstr "Invitar a <0>{selectedName}</0>"
+
+#: src/features/orgs/invite-member.tsx:41
+msgid "Invitar a la organización"
+msgstr "Invitar a la organización"
+
 #: src/features/auth/verify-email.tsx:67
 msgid "Ir al inicio"
 msgstr "Ir al inicio"
@@ -167,7 +233,7 @@ msgstr "Mi organización"
 msgid "Miembro"
 msgstr "Miembro"
 
-#: src/routes/_auth/orgs/$orgId.tsx:49
+#: src/routes/_auth/orgs/$orgId.tsx:53
 msgid "Miembros"
 msgstr "Miembros"
 
@@ -175,9 +241,21 @@ msgstr "Miembros"
 msgid "Mínimo {passwordMin} caracteres"
 msgstr "Mínimo {passwordMin} caracteres"
 
+#: src/features/orgs/pending-invitations.tsx:29
+msgid "No hay invitaciones pendientes"
+msgstr "No hay invitaciones pendientes"
+
+#: src/features/orgs/invite-member.tsx:211
+msgid "No hay usuarios que coincidan"
+msgstr "No hay usuarios que coincidan"
+
 #: src/routes/_auth/index.tsx:24
 msgid "No perteneces a ninguna organización"
 msgstr "No perteneces a ninguna organización"
+
+#: src/features/orgs/pending-invitations.tsx:22
+msgid "No se pudieron cargar las invitaciones"
+msgstr "No se pudieron cargar las invitaciones"
 
 #: src/features/orgs/orgs-overview.tsx:23
 msgid "No se pudieron cargar las organizaciones"
@@ -187,13 +265,25 @@ msgstr "No se pudieron cargar las organizaciones"
 msgid "No se pudieron cargar los miembros"
 msgstr "No se pudieron cargar los miembros"
 
+#: src/features/orgs/invite-member.tsx:204
+msgid "No se pudo buscar. Inténtalo de nuevo."
+msgstr "No se pudo buscar. Inténtalo de nuevo."
+
 #: src/features/auth/register-form.tsx:172
 msgid "No se pudo crear la cuenta. Inténtalo de nuevo."
 msgstr "No se pudo crear la cuenta. Inténtalo de nuevo."
 
+#: src/features/orgs/invite-member.tsx:248
+msgid "No se pudo enviar el email de invitación. Inténtalo de nuevo."
+msgstr "No se pudo enviar el email de invitación. Inténtalo de nuevo."
+
 #: src/features/auth/verify-email-banner.tsx:45
 msgid "No se pudo enviar el email. Inténtalo de nuevo."
 msgstr "No se pudo enviar el email. Inténtalo de nuevo."
+
+#: src/features/orgs/invite-member.tsx:250
+msgid "No se pudo enviar la invitación. Inténtalo de nuevo."
+msgstr "No se pudo enviar la invitación. Inténtalo de nuevo."
 
 #: src/features/auth/login-form.tsx:134
 msgid "No se pudo iniciar sesión. Inténtalo de nuevo."
@@ -203,7 +293,7 @@ msgstr "No se pudo iniciar sesión. Inténtalo de nuevo."
 msgid "No se pudo verificar tu email"
 msgstr "No se pudo verificar tu email"
 
-#: src/routes/_auth/orgs/$orgId.tsx:63
+#: src/routes/_auth/orgs/$orgId.tsx:77
 msgid "No tienes acceso a esta organización"
 msgstr "No tienes acceso a esta organización"
 
@@ -211,10 +301,19 @@ msgstr "No tienes acceso a esta organización"
 msgid "No tienes organización propia"
 msgstr "No tienes organización propia"
 
+#: src/features/orgs/invite-member.tsx:244
+msgid "No tienes permiso para invitar con ese rol"
+msgstr "No tienes permiso para invitar con ese rol"
+
 #: src/features/auth/register-form.tsx:114
 #: src/features/orgs/members-list.tsx:30
+#: src/features/orgs/pending-invitations.tsx:39
 msgid "Nombre"
 msgstr "Nombre"
+
+#: src/features/orgs/invite-member.tsx:110
+msgid "Nombre o @username"
+msgstr "Nombre o @username"
 
 #: src/features/orgs/org-header.tsx:53
 msgid "Organización"
@@ -236,7 +335,13 @@ msgstr "Reenviar"
 msgid "Regístrate con tu email y una contraseña."
 msgstr "Regístrate con tu email y una contraseña."
 
+#: src/features/orgs/invite-member.tsx:216
+msgid "Resultados"
+msgstr "Resultados"
+
+#: src/features/orgs/invite-member.tsx:134
 #: src/features/orgs/members-list.tsx:36
+#: src/features/orgs/pending-invitations.tsx:42
 msgid "Rol"
 msgstr "Rol"
 
@@ -252,7 +357,7 @@ msgstr "Te hemos enviado otro enlace"
 msgid "Todas las organizaciones"
 msgstr "Todas las organizaciones"
 
-#: src/routes/_auth/orgs/$orgId.tsx:44
+#: src/routes/_auth/orgs/$orgId.tsx:47
 msgid "Tu rol: {role}"
 msgstr "Tu rol: {role}"
 
@@ -260,7 +365,7 @@ msgstr "Tu rol: {role}"
 msgid "Un momento, por favor."
 msgstr "Un momento, por favor."
 
-#: src/routes/_auth/orgs/$orgId.tsx:66
+#: src/routes/_auth/orgs/$orgId.tsx:80
 msgid "Ver mis organizaciones"
 msgstr "Ver mis organizaciones"
 

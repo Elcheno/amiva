@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
-// Borra los datos de prueba de unos usuarios: actividad, su organización y el usuario.
+// Borra los datos de prueba de unos usuarios: actividad, invitaciones, su organización y el usuario.
 // activity es inmutable: se desactiva su trigger solo dentro de esta transacción (si algo falla, rollback lo reactiva)
 public final class TestCleanup {
 
@@ -22,6 +22,14 @@ public final class TestCleanup {
                             SELECT o.id FROM organization o JOIN app_user u ON u.id = o.owner_id
                             WHERE lower(u.email) = lower(?))
                         """, email);
+                // Las recibidas y las de su organización (las cascadas también lo harían; así queda explícito)
+                jdbc.update("""
+                        DELETE FROM invitation
+                        WHERE invitee_user_id IN (SELECT id FROM app_user WHERE lower(email) = lower(?))
+                           OR organization_id IN (
+                               SELECT o.id FROM organization o JOIN app_user u ON u.id = o.owner_id
+                               WHERE lower(u.email) = lower(?))
+                        """, email, email);
                 jdbc.update("DELETE FROM organization WHERE owner_id IN "
                         + "(SELECT id FROM app_user WHERE lower(email) = lower(?))", email);
                 jdbc.update("DELETE FROM app_user WHERE lower(email) = lower(?)", email);
