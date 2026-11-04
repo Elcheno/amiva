@@ -17,6 +17,8 @@ import { Route as AuthIndexRouteImport } from './routes/_auth/index'
 import { Route as AuthInviteTokenRouteImport } from './routes/_auth/invite.$token'
 import { Route as AuthOrgsIndexRouteImport } from './routes/_auth/orgs/index'
 import { Route as AuthOrgsOrgIdRouteImport } from './routes/_auth/orgs/$orgId'
+import { Route as AuthOrgsOrgIdIndexRouteImport } from './routes/_auth/orgs/$orgId.index'
+import { Route as AuthOrgsOrgIdGroupsGroupIdRouteImport } from './routes/_auth/orgs/$orgId.groups.$groupId'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/_auth',
@@ -57,6 +59,17 @@ const AuthOrgsOrgIdRoute = AuthOrgsOrgIdRouteImport.update({
   path: '/orgs/$orgId',
   getParentRoute: () => AuthRoute,
 } as any)
+const AuthOrgsOrgIdIndexRoute = AuthOrgsOrgIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthOrgsOrgIdRoute,
+} as any)
+const AuthOrgsOrgIdGroupsGroupIdRoute =
+  AuthOrgsOrgIdGroupsGroupIdRouteImport.update({
+    id: '/groups/$groupId',
+    path: '/groups/$groupId',
+    getParentRoute: () => AuthOrgsOrgIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthIndexRoute
@@ -64,8 +77,10 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/verify-email': typeof VerifyEmailRoute
   '/invite/$token': typeof AuthInviteTokenRoute
-  '/orgs/$orgId': typeof AuthOrgsOrgIdRoute
+  '/orgs/$orgId': typeof AuthOrgsOrgIdRouteWithChildren
   '/orgs/': typeof AuthOrgsIndexRoute
+  '/orgs/$orgId/': typeof AuthOrgsOrgIdIndexRoute
+  '/orgs/$orgId/groups/$groupId': typeof AuthOrgsOrgIdGroupsGroupIdRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -73,8 +88,9 @@ export interface FileRoutesByTo {
   '/verify-email': typeof VerifyEmailRoute
   '/': typeof AuthIndexRoute
   '/invite/$token': typeof AuthInviteTokenRoute
-  '/orgs/$orgId': typeof AuthOrgsOrgIdRoute
   '/orgs': typeof AuthOrgsIndexRoute
+  '/orgs/$orgId': typeof AuthOrgsOrgIdIndexRoute
+  '/orgs/$orgId/groups/$groupId': typeof AuthOrgsOrgIdGroupsGroupIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -84,8 +100,10 @@ export interface FileRoutesById {
   '/verify-email': typeof VerifyEmailRoute
   '/_auth/': typeof AuthIndexRoute
   '/_auth/invite/$token': typeof AuthInviteTokenRoute
-  '/_auth/orgs/$orgId': typeof AuthOrgsOrgIdRoute
+  '/_auth/orgs/$orgId': typeof AuthOrgsOrgIdRouteWithChildren
   '/_auth/orgs/': typeof AuthOrgsIndexRoute
+  '/_auth/orgs/$orgId/': typeof AuthOrgsOrgIdIndexRoute
+  '/_auth/orgs/$orgId/groups/$groupId': typeof AuthOrgsOrgIdGroupsGroupIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -97,6 +115,8 @@ export interface FileRouteTypes {
     | '/invite/$token'
     | '/orgs/$orgId'
     | '/orgs/'
+    | '/orgs/$orgId/'
+    | '/orgs/$orgId/groups/$groupId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -104,8 +124,9 @@ export interface FileRouteTypes {
     | '/verify-email'
     | '/'
     | '/invite/$token'
-    | '/orgs/$orgId'
     | '/orgs'
+    | '/orgs/$orgId'
+    | '/orgs/$orgId/groups/$groupId'
   id:
     | '__root__'
     | '/_auth'
@@ -116,6 +137,8 @@ export interface FileRouteTypes {
     | '/_auth/invite/$token'
     | '/_auth/orgs/$orgId'
     | '/_auth/orgs/'
+    | '/_auth/orgs/$orgId/'
+    | '/_auth/orgs/$orgId/groups/$groupId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -183,20 +206,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthOrgsOrgIdRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_auth/orgs/$orgId/': {
+      id: '/_auth/orgs/$orgId/'
+      path: '/'
+      fullPath: '/orgs/$orgId/'
+      preLoaderRoute: typeof AuthOrgsOrgIdIndexRouteImport
+      parentRoute: typeof AuthOrgsOrgIdRoute
+    }
+    '/_auth/orgs/$orgId/groups/$groupId': {
+      id: '/_auth/orgs/$orgId/groups/$groupId'
+      path: '/groups/$groupId'
+      fullPath: '/orgs/$orgId/groups/$groupId'
+      preLoaderRoute: typeof AuthOrgsOrgIdGroupsGroupIdRouteImport
+      parentRoute: typeof AuthOrgsOrgIdRoute
+    }
   }
 }
+
+interface AuthOrgsOrgIdRouteChildren {
+  AuthOrgsOrgIdIndexRoute: typeof AuthOrgsOrgIdIndexRoute
+  AuthOrgsOrgIdGroupsGroupIdRoute: typeof AuthOrgsOrgIdGroupsGroupIdRoute
+}
+
+const AuthOrgsOrgIdRouteChildren: AuthOrgsOrgIdRouteChildren = {
+  AuthOrgsOrgIdIndexRoute: AuthOrgsOrgIdIndexRoute,
+  AuthOrgsOrgIdGroupsGroupIdRoute: AuthOrgsOrgIdGroupsGroupIdRoute,
+}
+
+const AuthOrgsOrgIdRouteWithChildren = AuthOrgsOrgIdRoute._addFileChildren(
+  AuthOrgsOrgIdRouteChildren,
+)
 
 interface AuthRouteChildren {
   AuthIndexRoute: typeof AuthIndexRoute
   AuthInviteTokenRoute: typeof AuthInviteTokenRoute
-  AuthOrgsOrgIdRoute: typeof AuthOrgsOrgIdRoute
+  AuthOrgsOrgIdRoute: typeof AuthOrgsOrgIdRouteWithChildren
   AuthOrgsIndexRoute: typeof AuthOrgsIndexRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthIndexRoute: AuthIndexRoute,
   AuthInviteTokenRoute: AuthInviteTokenRoute,
-  AuthOrgsOrgIdRoute: AuthOrgsOrgIdRoute,
+  AuthOrgsOrgIdRoute: AuthOrgsOrgIdRouteWithChildren,
   AuthOrgsIndexRoute: AuthOrgsIndexRoute,
 }
 

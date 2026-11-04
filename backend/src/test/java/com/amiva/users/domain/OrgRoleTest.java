@@ -26,4 +26,18 @@ class OrgRoleTest {
         assertThat(OrgRole.ADMIN.has(OrgPermission.INVITE_MEMBERS)).isTrue();
         assertThat(OrgRole.MEMBER.has(OrgPermission.INVITE_MEMBERS)).isFalse();
     }
+
+    @Test
+    void todosLosRolesVenLosGrupos() {
+        for (OrgRole role : OrgRole.values()) {
+            assertThat(role.has(OrgPermission.VIEW_GROUPS)).as(role.name()).isTrue();
+        }
+    }
+
+    @Test
+    void ownerYAdminGestionanGrupos() {
+        assertThat(OrgRole.OWNER.has(OrgPermission.MANAGE_GROUPS)).isTrue();
+        assertThat(OrgRole.ADMIN.has(OrgPermission.MANAGE_GROUPS)).isTrue();
+        assertThat(OrgRole.MEMBER.has(OrgPermission.MANAGE_GROUPS)).isFalse();
+    }
 }

@@ -10,3 +10,8 @@ export function canInvite(role: OrgRole) {
 export function canInviteAsAdmin(role: OrgRole) {
   return role === 'OWNER'
 }
+
+// Crear, renombrar, borrar grupos y gestionar sus miembros (MANAGE_GROUPS); verlos puede cualquier miembro
+export function canManageGroups(role: OrgRole) {
+  return role === 'OWNER' || role === 'ADMIN'
+}

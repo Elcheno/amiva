@@ -1,21 +1,29 @@
 package com.amiva.users.api;
 
+import com.amiva.users.application.AlreadyInGroupException;
 import com.amiva.users.application.AlreadyMemberException;
 import com.amiva.users.application.EmailAlreadyRegisteredException;
 import com.amiva.users.application.EmailAlreadyVerifiedException;
 import com.amiva.users.application.EmailNotVerifiedException;
+import com.amiva.users.application.GroupMemberNotFoundException;
+import com.amiva.users.application.GroupNameTakenException;
+import com.amiva.users.application.GroupNotFoundException;
 import com.amiva.users.application.InvalidCredentialsException;
 import com.amiva.users.application.InvalidVerificationTokenException;
 import com.amiva.users.application.InvitationEmailException;
 import com.amiva.users.application.InvitationNotFoundException;
 import com.amiva.users.application.MemberNotFoundException;
+import com.amiva.users.application.NotOrganizationMemberException;
 import com.amiva.users.application.OrganizationNotFoundException;
 import com.amiva.users.application.PermissionDeniedException;
 import com.amiva.users.application.UserNotFoundException;
 import com.amiva.users.application.VerificationResendTooSoonException;
+import com.amiva.users.domain.InvalidGroupNameException;
 import com.amiva.users.domain.InvitationNotPendingException;
 import com.amiva.users.domain.OwnerRoleImmutableException;
 import com.amiva.users.domain.RoleNotAssignableException;
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -146,5 +154,61 @@ class UsersExceptionHandler {
         problem.setTitle("Email sin verificar");
         problem.setProperty("reason", "EMAIL_NOT_VERIFIED");
         return problem;
+    }
+
+    @ExceptionHandler(GroupNotFoundException.class)
+    ProblemDetail groupNotFound(GroupNotFoundException e) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+        problem.setTitle("Grupo no encontrado");
+        return problem;
+    }
+
+    @ExceptionHandler(GroupMemberNotFoundException.class)
+    ProblemDetail groupMemberNotFound(GroupMemberNotFoundException e) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+        problem.setTitle("Miembro no encontrado en el grupo");
+        return problem;
+    }
+
+    @ExceptionHandler(InvalidGroupNameException.class)
+    ProblemDetail invalidGroupName(InvalidGroupNameException e) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
+        problem.setTitle("Nombre de grupo no válido");
+        return problem;
+    }
+
+    @ExceptionHandler(NotOrganizationMemberException.class)
+    ProblemDetail notOrganizationMember(NotOrganizationMemberException e) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
+        problem.setTitle("No es miembro de la organización");
+        return problem;
+    }
+
+    @ExceptionHandler(GroupNameTakenException.class)
+    ProblemDetail groupNameTaken(GroupNameTakenException e) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
+        problem.setTitle("Nombre de grupo ya usado");
+        return problem;
+    }
+
+    @ExceptionHandler(AlreadyInGroupException.class)
+    ProblemDetail alreadyInGroup(AlreadyInGroupException e) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
+        problem.setTitle("Ya está en el grupo");
+        return problem;
+    }
+
+    // Carreras contra los índices de grupos: dos peticiones pasan la comprobación a la vez y una choca al guardar.
+    // Cualquier otra violación de integridad no es cosa de este módulo y sigue su camino
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    ProblemDetail dataIntegrity(DataIntegrityViolationException e) {
+        String constraint = e.getCause() instanceof ConstraintViolationException cve ? cve.getConstraintName() : null;
+        if ("uq_member_group_org_name".equalsIgnoreCase(constraint)) {
+            return groupNameTaken(new GroupNameTakenException());
+        }
+        if ("pk_member_group_member".equalsIgnoreCase(constraint)) {
+            return alreadyInGroup(new AlreadyInGroupException());
+        }
+        throw e;
     }
 }

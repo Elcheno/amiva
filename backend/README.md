@@ -128,13 +128,27 @@ Reglas:
 - La invitación se carga con `SELECT … FOR UPDATE`: de dos respuestas simultáneas, la segunda da 404. Si el alta choca con la PK de `membership`, 409.
 - Actividad `MEMBER_JOINED` al aceptar (autor y target: el nuevo miembro; `role`). Rechazar no registra nada.
 
+## Grupos de miembros
+
+Agrupan miembros de la organización (usuarios con cuenta) para seleccionarlos rápido en informes futuros. Solo guardan los miembros actuales (`member_group_member`): quitar a alguien borra la fila y las altas y bajas quedan únicamente en `activity`. Ver: cualquier miembro (`VIEW_GROUPS`). Crear, renombrar, borrar, añadir y quitar: OWNER y ADMIN (`MANAGE_GROUPS`). Un grupo de otra organización es un 404.
+
+- `GET /api/orgs/{orgId}/groups`: `[{id, name, memberCount}]` por nombre sin distinguir mayúsculas.
+- `POST /api/orgs/{orgId}/groups`: `{name}`, 201 `{id, name, memberCount: 0}`. El nombre se recorta y se colapsan los espacios; 1 a 60 caracteres (no bytes), si no 400. Duplicado en la organización sin distinguir mayúsculas: 409 (también la carrera contra `uq_member_group_org_name`).
+- `GET /api/orgs/{orgId}/groups/{groupId}`: `{id, name, members: [{userId, displayName, username, role, addedAt}]}` por nombre.
+- `PATCH /api/orgs/{orgId}/groups/{groupId}`: `{name}`, 200 como en la lista.
+- `DELETE /api/orgs/{orgId}/groups/{groupId}`: 204. Se borra aunque tenga miembros (las respuestas son de los usuarios, no del grupo).
+- `POST /api/orgs/{orgId}/groups/{groupId}/members`: `{userId}`, 201 con el miembro añadido. 400 si `userId` falta o no es miembro de la organización; 409 si ya está (también la carrera contra la PK).
+- `DELETE /api/orgs/{orgId}/groups/{groupId}/members/{userId}`: 204; 404 si no está en el grupo.
+
+Si un usuario sale de la organización (`membership`), sale de sus grupos por cascada. `member_group_member` lleva `organization_id` en dos FK compuestas (grupo y membresía) para que ambos sean de la misma organización.
+
 ## Actividad
 
 Registro append-only por organización (`activity`): autor (`actor_id` + copia de `actor_name`, `anonymous` si es superadmin), `action`, `target_type` + `target_id`, `details` (JSONB con nombres copiados y valores) y `occurred_at`. El texto lo monta el front a partir de `action` + `details`.
 
 Los casos de uso publican un evento de dominio (`OrganizationCreated`, `MemberRoleChanged`…) con `ApplicationEventPublisher`; `ActivityRecorder` lo escucha con `@EventListener` dentro de la misma transacción (`MANDATORY`): si falla el registro, falla la acción. Acción nueva = evento + valor en `ActivityAction` + método en `ActivityRecorder` + test.
 
-Acciones actuales: `ORG_CREATED` (registro), `MEMBER_ROLE_CHANGED` (solo si el rol cambia de verdad), `MEMBER_INVITED` (invitación enviada o reenviada), `MEMBER_JOINED` (invitación aceptada).
+Acciones actuales: `ORG_CREATED` (registro), `MEMBER_ROLE_CHANGED` (solo si el rol cambia de verdad), `MEMBER_INVITED` (invitación enviada o reenviada), `MEMBER_JOINED` (invitación aceptada), `GROUP_CREATED`, `GROUP_RENAMED` (solo si el nombre cambia, también si solo cambian las mayúsculas), `GROUP_DELETED` (con `memberCount`; no se registra una baja por miembro), `GROUP_MEMBER_ADDED` y `GROUP_MEMBER_REMOVED`. Las de grupo usan `target_type = GROUP` y `target_id` = id del grupo: el historial de un grupo es filtrar `activity` por ese id.
 
 ## Verificación del email
 
