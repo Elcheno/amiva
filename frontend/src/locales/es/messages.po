@@ -15,6 +15,11 @@ msgstr "¿No tienes cuenta? <0>Regístrate</0>"
 msgid "¿Ya tienes cuenta? <0>Inicia sesión</0>"
 msgstr "¿Ya tienes cuenta? <0>Inicia sesión</0>"
 
+#. placeholder {0}: group.memberCount
+#: src/features/groups/groups-list.tsx:51
+msgid "{0, plural, one {# miembro} other {# miembros}}"
+msgstr "{0, plural, one {# miembro} other {# miembros}}"
+
 #: src/features/orgs/received-invitations.tsx:47
 msgid "{invitedBy} te invita como {role}"
 msgstr "{invitedBy} te invita como {role}"
@@ -27,9 +32,26 @@ msgstr "Aceptar"
 msgid "Admin"
 msgstr "Admin"
 
+#: src/features/groups/group-detail.tsx:241
+msgid "Añadido"
+msgstr "Añadido"
+
+#: src/features/groups/group-detail.tsx:187
+msgid "Añadir"
+msgstr "Añadir"
+
+#: src/features/groups/group-detail.tsx:170
+msgid "Añadir miembro"
+msgstr "Añadir miembro"
+
 #: src/features/orgs/orgs-overview.tsx:58
 msgid "Aún no participas en ninguna organización"
 msgstr "Aún no participas en ninguna organización"
+
+#: src/features/groups/group-detail.tsx:122
+#: src/features/groups/group-detail.tsx:127
+msgid "Borrar grupo"
+msgstr "Borrar grupo"
 
 #: src/features/orgs/invite-member.tsx:44
 msgid "Busca a un usuario registrado por su nombre o su @username."
@@ -43,6 +65,8 @@ msgstr "Buscando…"
 msgid "Buscar usuario"
 msgstr "Buscar usuario"
 
+#: src/features/groups/group-detail.tsx:50
+#: src/features/groups/groups-list.tsx:29
 #: src/features/orgs/invitation-by-token.tsx:27
 #: src/features/orgs/members-list.tsx:13
 #: src/features/orgs/orgs-overview.tsx:16
@@ -63,6 +87,10 @@ msgstr "Cerrar sesión"
 msgid "Comprueba que has copiado el enlace completo o pide otro desde la aplicación."
 msgstr "Comprueba que has copiado el enlace completo o pide otro desde la aplicación."
 
+#: src/features/groups/group-detail.tsx:143
+msgid "Confirmar borrado"
+msgstr "Confirmar borrado"
+
 #: src/features/auth/login-form.tsx:85
 #: src/features/auth/register-form.tsx:128
 msgid "Contraseña"
@@ -72,10 +100,18 @@ msgstr "Contraseña"
 msgid "Creando cuenta…"
 msgstr "Creando cuenta…"
 
+#: src/features/groups/groups-list.tsx:20
+msgid "Crear"
+msgstr "Crear"
+
 #: src/features/auth/register-form.tsx:139
 #: src/features/auth/register-form.tsx:176
 msgid "Crear cuenta"
 msgstr "Crear cuenta"
+
+#: src/features/groups/groups-list.tsx:19
+msgid "Crear grupo"
+msgstr "Crear grupo"
 
 #: src/features/auth/register-form.tsx:86
 msgid "Cuenta creada"
@@ -98,6 +134,14 @@ msgstr "El enlace ha caducado"
 #: src/features/auth/verify-email.tsx:44
 msgid "El enlace no es válido"
 msgstr "El enlace no es válido"
+
+#: src/features/groups/group-detail.tsx:227
+msgid "El grupo no tiene miembros"
+msgstr "El grupo no tiene miembros"
+
+#: src/features/groups/group-name-form.tsx:71
+msgid "El nombre debe tener entre 1 y 60 caracteres"
+msgstr "El nombre debe tener entre 1 y 60 caracteres"
 
 #: src/features/auth/login-form.tsx:78
 #: src/features/auth/register-form.tsx:121
@@ -154,9 +198,17 @@ msgstr "Escribe tu nombre"
 msgid "Ese email ya está registrado"
 msgstr "Ese email ya está registrado"
 
+#: src/features/groups/group-detail.tsx:203
+msgid "Ese usuario no es miembro de la organización"
+msgstr "Ese usuario no es miembro de la organización"
+
 #: src/features/orgs/invite-member.tsx:246
 msgid "Ese usuario ya es miembro de la organización"
 msgstr "Ese usuario ya es miembro de la organización"
+
+#: src/features/groups/group-detail.tsx:201
+msgid "Ese usuario ya está en el grupo"
+msgstr "Ese usuario ya está en el grupo"
 
 #: src/features/auth/verify-email-banner.tsx:40
 msgid "Espera un minuto antes de pedir otro"
@@ -174,6 +226,10 @@ msgstr "Este enlace ya se ha usado"
 #: src/features/auth/verify-email.tsx:49
 msgid "Gracias. Tu email ya está confirmado."
 msgstr "Gracias. Tu email ya está confirmado."
+
+#: src/routes/_auth/orgs/$orgId.index.tsx:45
+msgid "Grupos"
+msgstr "Grupos"
 
 #: src/features/auth/register-form.tsx:89
 msgid "Hemos creado tu cuenta ({email}) y tu organización «{orgName}»."
@@ -213,7 +269,7 @@ msgstr "Invitación rechazada"
 msgid "Invitaciones"
 msgstr "Invitaciones"
 
-#: src/routes/_auth/orgs/$orgId.tsx:62
+#: src/routes/_auth/orgs/$orgId.index.tsx:52
 msgid "Invitaciones pendientes"
 msgstr "Invitaciones pendientes"
 
@@ -263,13 +319,21 @@ msgstr "Mi organización"
 msgid "Miembro"
 msgstr "Miembro"
 
-#: src/routes/_auth/orgs/$orgId.tsx:53
+#: src/routes/_auth/orgs/$orgId.index.tsx:37
 msgid "Miembros"
 msgstr "Miembros"
+
+#: src/features/groups/group-detail.tsx:82
+msgid "Miembros del grupo"
+msgstr "Miembros del grupo"
 
 #: src/features/auth/register-validation.ts:33
 msgid "Mínimo {passwordMin} caracteres"
 msgstr "Mínimo {passwordMin} caracteres"
+
+#: src/features/groups/groups-list.tsx:37
+msgid "No hay grupos"
+msgstr "No hay grupos"
 
 #: src/features/orgs/pending-invitations.tsx:29
 msgid "No hay invitaciones pendientes"
@@ -291,13 +355,29 @@ msgstr "No se pudieron cargar las invitaciones"
 msgid "No se pudieron cargar las organizaciones"
 msgstr "No se pudieron cargar las organizaciones"
 
+#: src/features/groups/groups-list.tsx:33
+msgid "No se pudieron cargar los grupos"
+msgstr "No se pudieron cargar los grupos"
+
 #: src/features/orgs/members-list.tsx:20
 msgid "No se pudieron cargar los miembros"
 msgstr "No se pudieron cargar los miembros"
 
+#: src/features/groups/group-detail.tsx:205
+msgid "No se pudo añadir al grupo. Inténtalo de nuevo."
+msgstr "No se pudo añadir al grupo. Inténtalo de nuevo."
+
+#: src/features/groups/group-detail.tsx:138
+msgid "No se pudo borrar el grupo. Inténtalo de nuevo."
+msgstr "No se pudo borrar el grupo. Inténtalo de nuevo."
+
 #: src/features/orgs/invite-member.tsx:204
 msgid "No se pudo buscar. Inténtalo de nuevo."
 msgstr "No se pudo buscar. Inténtalo de nuevo."
+
+#: src/features/groups/group-detail.tsx:54
+msgid "No se pudo cargar el grupo"
+msgstr "No se pudo cargar el grupo"
 
 #: src/features/orgs/invitation-by-token.tsx:38
 msgid "No se pudo cargar la invitación"
@@ -319,9 +399,17 @@ msgstr "No se pudo enviar el email. Inténtalo de nuevo."
 msgid "No se pudo enviar la invitación. Inténtalo de nuevo."
 msgstr "No se pudo enviar la invitación. Inténtalo de nuevo."
 
+#: src/features/groups/group-name-form.tsx:75
+msgid "No se pudo guardar el grupo. Inténtalo de nuevo."
+msgstr "No se pudo guardar el grupo. Inténtalo de nuevo."
+
 #: src/features/auth/login-form.tsx:134
 msgid "No se pudo iniciar sesión. Inténtalo de nuevo."
 msgstr "No se pudo iniciar sesión. Inténtalo de nuevo."
+
+#: src/features/groups/group-detail.tsx:273
+msgid "No se pudo quitar del grupo. Inténtalo de nuevo."
+msgstr "No se pudo quitar del grupo. Inténtalo de nuevo."
 
 #: src/features/orgs/invitation-actions.tsx:78
 msgid "No se pudo responder a la invitación. Inténtalo de nuevo."
@@ -331,7 +419,7 @@ msgstr "No se pudo responder a la invitación. Inténtalo de nuevo."
 msgid "No se pudo verificar tu email"
 msgstr "No se pudo verificar tu email"
 
-#: src/routes/_auth/orgs/$orgId.tsx:77
+#: src/routes/_auth/orgs/$orgId.tsx:36
 msgid "No tienes acceso a esta organización"
 msgstr "No tienes acceso a esta organización"
 
@@ -339,15 +427,24 @@ msgstr "No tienes acceso a esta organización"
 msgid "No tienes organización propia"
 msgstr "No tienes organización propia"
 
+#: src/features/groups/group-name-form.tsx:73
+msgid "No tienes permiso para gestionar los grupos"
+msgstr "No tienes permiso para gestionar los grupos"
+
 #: src/features/orgs/invite-member.tsx:244
 msgid "No tienes permiso para invitar con ese rol"
 msgstr "No tienes permiso para invitar con ese rol"
 
 #: src/features/auth/register-form.tsx:114
+#: src/features/groups/group-detail.tsx:238
 #: src/features/orgs/members-list.tsx:30
 #: src/features/orgs/pending-invitations.tsx:39
 msgid "Nombre"
 msgstr "Nombre"
+
+#: src/features/groups/group-detail.tsx:98
+msgid "Nombre del grupo"
+msgstr "Nombre del grupo"
 
 #: src/features/orgs/invite-member.tsx:110
 msgid "Nombre o @username"
@@ -365,6 +462,14 @@ msgstr "Organizaciones"
 msgid "Propietario"
 msgstr "Propietario"
 
+#: src/features/groups/group-detail.tsx:263
+msgid "Quitar"
+msgstr "Quitar"
+
+#: src/features/groups/group-detail.tsx:222
+msgid "Quitar a {displayName}"
+msgstr "Quitar a {displayName}"
+
 #: src/features/orgs/invitation-actions.tsx:55
 msgid "Rechazar"
 msgstr "Rechazar"
@@ -377,6 +482,10 @@ msgstr "Reenviar"
 msgid "Regístrate con tu email y una contraseña."
 msgstr "Regístrate con tu email y una contraseña."
 
+#: src/features/groups/group-detail.tsx:99
+msgid "Renombrar"
+msgstr "Renombrar"
+
 #: src/features/orgs/invite-member.tsx:216
 msgid "Resultados"
 msgstr "Resultados"
@@ -386,6 +495,10 @@ msgstr "Resultados"
 #: src/features/orgs/pending-invitations.tsx:42
 msgid "Rol"
 msgstr "Rol"
+
+#: src/features/groups/group-detail.tsx:130
+msgid "Se borrará el grupo {name} con sus miembros. Las respuestas de los usuarios no se ven afectadas."
+msgstr "Se borrará el grupo {name} con sus miembros. Las respuestas de los usuarios no se ven afectadas."
 
 #: src/features/auth/verify-email.tsx:54
 msgid "Si ya verificaste tu email, no tienes que hacer nada más."
@@ -403,7 +516,7 @@ msgstr "Te invitan como {role}"
 msgid "Todas las organizaciones"
 msgstr "Todas las organizaciones"
 
-#: src/routes/_auth/orgs/$orgId.tsx:47
+#: src/routes/_auth/orgs/$orgId.index.tsx:31
 msgid "Tu rol: {role}"
 msgstr "Tu rol: {role}"
 
@@ -411,7 +524,7 @@ msgstr "Tu rol: {role}"
 msgid "Un momento, por favor."
 msgstr "Un momento, por favor."
 
-#: src/routes/_auth/orgs/$orgId.tsx:80
+#: src/routes/_auth/orgs/$orgId.tsx:39
 msgid "Ver mis organizaciones"
 msgstr "Ver mis organizaciones"
 
@@ -428,6 +541,14 @@ msgstr "Verifica tu email: te hemos enviado un enlace a {email}"
 msgid "Verificando tu email…"
 msgstr "Verificando tu email…"
 
+#: src/features/groups/group-detail.tsx:46
+msgid "Volver a la organización"
+msgstr "Volver a la organización"
+
 #: src/features/orgs/invitation-actions.tsx:75
 msgid "Ya eres miembro de esta organización"
 msgstr "Ya eres miembro de esta organización"
+
+#: src/features/groups/group-name-form.tsx:69
+msgid "Ya hay un grupo con ese nombre"
+msgstr "Ya hay un grupo con ese nombre"

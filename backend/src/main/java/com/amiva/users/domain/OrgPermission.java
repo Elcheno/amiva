@@ -4,7 +4,9 @@ package com.amiva.users.domain;
 public enum OrgPermission {
     VIEW_MEMBERS("ver los miembros"),
     MANAGE_ROLES("cambiar roles"),
-    INVITE_MEMBERS("invitar miembros");
+    INVITE_MEMBERS("invitar miembros"),
+    VIEW_GROUPS("ver los grupos"),
+    MANAGE_GROUPS("gestionar los grupos");
 
     private final String action;
 
